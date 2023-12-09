@@ -12,7 +12,7 @@
  * @version		6.3.0
  */
 
-namespace WeCodeArt\Support;
+namespace WeCodeArt\Support\Modules;
 
 defined( 'ABSPATH' ) || exit;
 
