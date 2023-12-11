@@ -6,7 +6,7 @@
  * Please do all modifications in the form of a child theme.
  *
  * @package 	WeCodeArt Framework
- * @subpackage 	Support\Formatting
+ * @subpackage 	Support\Modules\Formatting
  * @copyright   Copyright (c) 2023, WeCodeArt Framework
  * @since 		6.3.0
  * @version		6.3.0
@@ -34,7 +34,36 @@ final class Formatting implements Integration {
 	 * Send to Constructor
 	 */
 	public function register_hooks() {
-		add_action( 'enqueue_block_editor_assets', 	[ $this, 'block_editor_assets' ], 20, 1 );
+		// Register styles component.
+		wecodeart( 'styles' )->Components->register( 'modules/formatting', Formatting\Styles::class );
+
+		// Enqueue assets hooks.
+		\add_action( 'wp_enqueue_scripts', 					[ $this, 'frontend_assets'		], 20, 1 );
+		\add_action( 'enqueue_block_editor_assets',			[ $this, 'editor_assets' 		], 20, 1 );
+
+		// Default text decoration styles.
+		\add_filter( 'wecodeart/filter/gutenberg/settings',	[ $this, 'decoration_styles'	], 20, 2 );
+	}
+
+	/**
+	 * Frontend only.
+	 *
+	 * @return  void
+	 */
+	public function frontend_assets(): void {
+		wecodeart( 'assets' )->add_script( $this->make_handle(), [
+			'path' 		=> $this->get_asset( 'js', 'front' ),
+			'deps'		=> [ 'wecodeart-support-assets' ],
+			'load'		=> function() {
+				if( str_contains( get_post_field( 'post_content', get_the_ID() ), 'has-popper' ) ) {
+					wecodeart( 'styles' )->Components->load( [ 'modules/formatting', 'tooltip', 'popover' ] );
+
+					return true;
+				}
+
+				return false;
+			},
+		] );
 	}
 
 	/**
@@ -42,7 +71,14 @@ final class Formatting implements Integration {
 	 *
 	 * @return  void
 	 */
-	public function block_editor_assets() {
+	public function editor_assets(): void {
+		wp_enqueue_style(
+			$this->make_handle(),
+			$this->get_asset( 'css', 'index' ),
+			[],
+			wecodeart( 'version' )
+		);
+
 		wp_enqueue_script(
 			$this->make_handle(),
 			$this->get_asset( 'js', 'index' ),
@@ -54,6 +90,35 @@ final class Formatting implements Integration {
 	}
 
 	/**
+	 * Add new block editor settings for custom classes.
+	 *
+	 * @param array  $settings 	The editor settings.
+	 * @param object $post 		The post being edited.
+	 *
+	 * @return array Returns updated editors classes suggestions.
+	 */
+	public function decoration_styles( array $settings, $post ): array {
+		if ( ! isset( $settings[ 'decorationStyles' ] ) ) {
+			$settings['decorationStyles'] = apply_filters( 'wecodeart/filter/gutenberg/settings/decoration', [
+				[
+					'label' => __( 'Underline', 'wecodeart' ),
+					'value' => 'underline',
+				],
+				[
+					'label' => __( 'Brush', 'wecodeart' ),
+					'value' => 'brush',
+				],
+				[
+					'label' => __( 'Marker', 'wecodeart' ),
+					'value' => 'marker',
+				]
+			], $post );
+		}
+
+		return $settings;
+	}
+
+	/**
 	 * Get File
 	 *
 	 * @return string
@@ -61,7 +126,7 @@ final class Formatting implements Integration {
 	public static function get_asset( string $type, string $name ): string {
 		$file_path = wecodeart_if( 'is_dev_mode' ) ? 'unminified' : 'minified';
 		$file_name = wecodeart_if( 'is_dev_mode' ) ? $name . '.' . $type :  $name . '.min.' . $type;
-		$file_path = wecodeart_config( 'paths' )['uri'] . '/inc/support/formatting/assets/' . $file_path . '/' . $type . '/' . $file_name;
+		$file_path = wecodeart_config( 'paths' )['uri'] . '/inc/support/modules/formatting/assets/' . $file_path . '/' . $type . '/' . $file_name;
 
 		return esc_url( $file_path );
 	}

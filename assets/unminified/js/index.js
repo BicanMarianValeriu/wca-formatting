@@ -56,10 +56,10 @@ const code = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_
 
 /***/ }),
 
-/***/ "./inc/support/formatting/src/js/abbreviation/components/edit.js":
-/*!***********************************************************************!*\
-  !*** ./inc/support/formatting/src/js/abbreviation/components/edit.js ***!
-  \***********************************************************************/
+/***/ "./inc/support/modules/formatting/src/js/abbreviation/components/edit.js":
+/*!*******************************************************************************!*\
+  !*** ./inc/support/modules/formatting/src/js/abbreviation/components/edit.js ***!
+  \*******************************************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -154,17 +154,17 @@ const Edit = _ref => {
 
 /***/ }),
 
-/***/ "./inc/support/formatting/src/js/abbreviation/index.js":
-/*!*************************************************************!*\
-  !*** ./inc/support/formatting/src/js/abbreviation/index.js ***!
-  \*************************************************************/
+/***/ "./inc/support/modules/formatting/src/js/abbreviation/index.js":
+/*!*********************************************************************!*\
+  !*** ./inc/support/modules/formatting/src/js/abbreviation/index.js ***!
+  \*********************************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   abbreviation: function() { return /* binding */ abbreviation; }
 /* harmony export */ });
-/* harmony import */ var _components_edit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/edit */ "./inc/support/formatting/src/js/abbreviation/components/edit.js");
+/* harmony import */ var _components_edit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/edit */ "./inc/support/modules/formatting/src/js/abbreviation/components/edit.js");
 /**
  * WordPress dependencies
  */
@@ -194,10 +194,147 @@ const abbreviation = {
 
 /***/ }),
 
-/***/ "./inc/support/formatting/src/js/justify/components/controls.js":
-/*!**********************************************************************!*\
-  !*** ./inc/support/formatting/src/js/justify/components/controls.js ***!
-  \**********************************************************************/
+/***/ "./inc/support/modules/formatting/src/js/decoration/index.js":
+/*!*******************************************************************!*\
+  !*** ./inc/support/modules/formatting/src/js/decoration/index.js ***!
+  \*******************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   decoration: function() { return /* binding */ decoration; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+/**
+ * WordPress dependencies
+ */
+const {
+  i18n: {
+    __
+  },
+  data: {
+    select
+  },
+  element: {
+    useState,
+    useEffect
+  },
+  components: {
+    Icon,
+    SVG,
+    Path,
+    Modal,
+    Button,
+    ButtonGroup,
+    SelectControl
+  },
+  richText: {
+    applyFormat,
+    removeFormat,
+    getActiveFormat
+  },
+  blockEditor: {
+    RichTextToolbarButton
+  }
+} = wp;
+
+/**
+ * Block constants
+ */
+const name = 'wca/decoration';
+const decoration = {
+  name,
+  title: __('Decoration', 'wecodeart'),
+  tagName: 'span',
+  className: 'has-decoration',
+  attributes: {
+    class: 'class'
+  },
+  edit(_ref) {
+    let {
+      isActive,
+      value,
+      onChange
+    } = _ref;
+    const activeFormat = getActiveFormat(value, name);
+    const {
+      wecodeart: {
+        decorationStyles = []
+      } = {}
+    } = select('core/editor').getEditorSettings();
+    const {
+      attributes = {}
+    } = activeFormat || {};
+    const [isOpen, setIsOpen] = useState(false);
+    const [state, setState] = useState({
+      ...attributes
+    });
+    const toggle = () => setIsOpen(!isOpen);
+    const selectOptions = [...[{
+      label: __('Default', 'wecodeart'),
+      value: ''
+    }], ...decorationStyles.map(i => ({
+      ...i,
+      value: `is-style-${i.value}`
+    }))];
+    useEffect(() => setState({
+      ...attributes
+    }), [activeFormat]);
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichTextToolbarButton, {
+      icon: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Icon, {
+        icon: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SVG, {
+          style: {
+            padding: 4
+          },
+          viewBox: "0 0 16 16"
+        }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Path, {
+          "fill-rule": "evenodd",
+          d: "M11.096.644a2 2 0 0 1 2.791.036l1.433 1.433a2 2 0 0 1 .035 2.791l-.413.435-8.07 8.995a.5.5 0 0 1-.372.166h-3a.5.5 0 0 1-.234-.058l-.412.412A.5.5 0 0 1 2.5 15h-2a.5.5 0 0 1-.354-.854l1.412-1.412A.5.5 0 0 1 1.5 12.5v-3a.5.5 0 0 1 .166-.372l8.995-8.07.435-.414Zm-.115 1.47L2.727 9.52l3.753 3.753 7.406-8.254-2.905-2.906Zm3.585 2.17.064-.068a1 1 0 0 0-.017-1.396L13.18 1.387a1 1 0 0 0-1.396-.018l-.068.065 2.85 2.85M5.293 13.5 2.5 10.707v1.586L3.707 13.5z"
+        }))
+      }),
+      title: __('Decoration', 'wecodeart'),
+      onClick: toggle,
+      isActive: isActive
+    }), isOpen && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Modal, {
+      title: __('Settings', 'wecodeart'),
+      onRequestClose: toggle
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
+      label: __('Style', 'wecodeart'),
+      value: state?.class,
+      options: selectOptions,
+      onChange: _class => setState({
+        ...state,
+        class: _class
+      })
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ButtonGroup, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
+      isPrimary: true,
+      isLarge: true,
+      onClick: () => {
+        onChange(applyFormat(value, {
+          type: name,
+          attributes: state
+        }));
+        toggle();
+      }
+    }, __('Apply', 'wecodeart')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
+      isDestructive: true,
+      isLarge: true,
+      onClick: () => {
+        onChange(removeFormat(value, name));
+        toggle();
+      }
+    }, __('Remove', 'wecodeart')))));
+  }
+};
+
+/***/ }),
+
+/***/ "./inc/support/modules/formatting/src/js/justify/components/controls.js":
+/*!******************************************************************************!*\
+  !*** ./inc/support/modules/formatting/src/js/justify/components/controls.js ***!
+  \******************************************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -283,10 +420,10 @@ const Control = () => {
 
 /***/ }),
 
-/***/ "./inc/support/formatting/src/js/justify/index.js":
-/*!********************************************************!*\
-  !*** ./inc/support/formatting/src/js/justify/index.js ***!
-  \********************************************************/
+/***/ "./inc/support/modules/formatting/src/js/justify/index.js":
+/*!****************************************************************!*\
+  !*** ./inc/support/modules/formatting/src/js/justify/index.js ***!
+  \****************************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -295,7 +432,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _components_controls__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/controls */ "./inc/support/formatting/src/js/justify/components/controls.js");
+/* harmony import */ var _components_controls__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/controls */ "./inc/support/modules/formatting/src/js/justify/components/controls.js");
 
 /**
  * WordPress dependencies
@@ -340,10 +477,467 @@ const justify = {
 
 /***/ }),
 
-/***/ "./inc/support/formatting/src/js/underline/index.js":
-/*!**********************************************************!*\
-  !*** ./inc/support/formatting/src/js/underline/index.js ***!
-  \**********************************************************/
+/***/ "./inc/support/modules/formatting/src/js/plugin/Control.js":
+/*!*****************************************************************!*\
+  !*** ./inc/support/modules/formatting/src/js/plugin/Control.js ***!
+  \*****************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+/**
+ * External dependencies
+ */
+const {
+  get
+} = lodash;
+
+/**
+ * WordPress dependencies
+ */
+const {
+  i18n: {
+    __
+  },
+  data: {
+    useSelect,
+    useDispatch
+  },
+  components: {
+    withSpokenMessages,
+    Icon
+  },
+  editPost: {
+    PluginBlockSettingsMenuItem
+  },
+  blockEditor: {
+    store: blockEditorStore
+  },
+  compose: {
+    compose
+  },
+  richText: {
+    create,
+    toHTMLString
+  }
+} = wp;
+const allowedBlocks = ['core/heading', 'core/paragraph', 'core/code', 'core/list-item'];
+
+/**
+ * Render plugin
+ */
+const Control = () => {
+  const {
+    blockId,
+    blockName,
+    blockContent
+  } = useSelect(select => {
+    const selectedBlock = select(blockEditorStore).getSelectedBlock();
+    if (selectedBlock) {
+      return {
+        blockId: selectedBlock.clientId,
+        blockName: selectedBlock.name,
+        blockContent: get(selectedBlock, 'attributes.content')
+      };
+    }
+    return {};
+  });
+  if (allowedBlocks.includes(blockName)) {
+    const record = create({
+      html: blockContent
+    });
+    const {
+      updateBlockAttributes
+    } = useDispatch(blockEditorStore, [blockId, record]);
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PluginBlockSettingsMenuItem, {
+      icon: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Icon, {
+        icon: "editor-removeformatting",
+        className: "components-menu-items__item-icon"
+      }),
+      label: __('Clear block formatting', 'wecodeart'),
+      onClick: () => updateBlockAttributes(blockId, {
+        content: toHTMLString({
+          value: {
+            ...record,
+            formats: Array(record.formats.length)
+          }
+        })
+      })
+    });
+  }
+  return null;
+};
+/* harmony default export */ __webpack_exports__["default"] = (compose(withSpokenMessages)(Control));
+
+/***/ }),
+
+/***/ "./inc/support/modules/formatting/src/js/plugin/index.js":
+/*!***************************************************************!*\
+  !*** ./inc/support/modules/formatting/src/js/plugin/index.js ***!
+  \***************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Control__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Control */ "./inc/support/modules/formatting/src/js/plugin/Control.js");
+/**
+ * Internal dependencies
+ */
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'wca-clear-formatting',
+  render: _Control__WEBPACK_IMPORTED_MODULE_0__["default"]
+});
+
+/***/ }),
+
+/***/ "./inc/support/modules/formatting/src/js/tooltip/Controls.js":
+/*!*******************************************************************!*\
+  !*** ./inc/support/modules/formatting/src/js/tooltip/Controls.js ***!
+  \*******************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+/**
+ * WordPress dependencies
+ */
+const {
+  i18n: {
+    __
+  },
+  components: {
+    SelectControl,
+    ToggleControl,
+    __experimentalNumberControl: NumberControl,
+    TextControl,
+    TextareaControl,
+    TabPanel
+  }
+} = wp;
+const Controls = _ref => {
+  let {
+    state,
+    setState
+  } = _ref;
+  const options = JSON.parse(state?.['data-options'] || '{}');
+  const setOptions = value => {
+    let newOptions = {
+      ...options,
+      ...value
+    };
+    newOptions = Object.fromEntries(Object.entries(newOptions).filter(_ref2 => {
+      let [_, v] = _ref2;
+      return v !== null && v !== '';
+    }));
+    setState({
+      ...state,
+      'data-options': JSON.stringify(newOptions)
+    });
+  };
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TabPanel, {
+    activeClass: "active-tab",
+    className: "wecodeart-tabs wecodeart-tabs--popper",
+    tabs: [{
+      name: 'content',
+      title: __('Content', 'wecodeart')
+    }, {
+      name: 'options',
+      title: __('Options', 'wecodeart')
+    }]
+  }, _ref3 => {
+    var _state$dataPlugin, _options$html, _options$animation, _options$sanitize, _options$placement;
+    let {
+      name
+    } = _ref3;
+    let render;
+    switch (name) {
+      case 'content':
+        render = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
+          label: __('Type', 'wecodeart'),
+          value: (_state$dataPlugin = state?.['data-plugin']) !== null && _state$dataPlugin !== void 0 ? _state$dataPlugin : 'tooltip',
+          options: [{
+            label: 'Tooltip',
+            value: 'tooltip'
+          }, {
+            label: 'Popover',
+            value: 'popover'
+          }],
+          onChange: type => setState({
+            ...state,
+            'data-plugin': type
+          })
+        }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
+          label: __('HTML', 'wecodeart'),
+          checked: (_options$html = options?.html) !== null && _options$html !== void 0 ? _options$html : false,
+          help: __('Allow HTML in the tooltip.', 'wecodeart'),
+          onChange: html => setOptions({
+            html
+          })
+        }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
+          label: __('Title', 'wecodeart'),
+          value: options?.title,
+          onChange: title => setOptions({
+            title
+          })
+        }), state?.['data-plugin'] === 'popover' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
+          label: __('Content', 'wecodeart'),
+          value: options?.content,
+          onChange: content => setOptions({
+            content
+          })
+        }));
+        break;
+      case 'options':
+        render = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
+          label: __('Animation', 'wecodeart'),
+          checked: (_options$animation = options?.animation) !== null && _options$animation !== void 0 ? _options$animation : true,
+          help: __('Apply a CSS fade transition to the tooltip.', 'wecodeart'),
+          onChange: animation => setOptions({
+            animation
+          })
+        }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
+          label: __('Sanitize', 'wecodeart'),
+          checked: (_options$sanitize = options?.sanitize) !== null && _options$sanitize !== void 0 ? _options$sanitize : true,
+          help: __(`Enable or disable the sanitization. If activated 'template', 'content' and 'title' options will be sanitized.`, 'wecodeart'),
+          onChange: sanitize => setOptions({
+            sanitize
+          })
+        }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
+          label: __('Trigger', 'wecodeart'),
+          value: options?.trigger ? options.trigger.split(' ') : ['hover', 'focus'],
+          multiple: true,
+          options: [{
+            label: __('Hover', 'wecodeart'),
+            value: 'hover'
+          }, {
+            label: __('Focus', 'wecodeart'),
+            value: 'focus'
+          }, {
+            label: __('Click', 'wecodeart'),
+            value: 'click'
+          }, {
+            label: __('Manual', 'wecodeart'),
+            value: 'manual'
+          }],
+          onChange: trigger => setOptions({
+            trigger: trigger.join(' ')
+          })
+        }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
+          label: __('Placement', 'wecodeart'),
+          value: (_options$placement = options?.placement) !== null && _options$placement !== void 0 ? _options$placement : 'auto',
+          help: __('How to position the tooltip: auto, top, bottom, left, right.', 'wecodeart'),
+          options: [{
+            label: __('Auto', 'wecodeart'),
+            value: 'auto'
+          }, {
+            label: __('Top', 'wecodeart'),
+            value: 'top'
+          }, {
+            label: __('Left', 'wecodeart'),
+            value: 'left'
+          }, {
+            label: __('Right', 'wecodeart'),
+            value: 'right'
+          }, {
+            label: __('Bottom', 'wecodeart'),
+            value: 'bottom'
+          }],
+          onChange: placement => setOptions({
+            placement
+          })
+        }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(NumberControl, {
+          label: __('Delay', 'wecodeart'),
+          value: options?.delay,
+          placeholder: "0",
+          min: 0,
+          step: 10,
+          help: __('Delay showing and hiding the popover (ms)—doesn`t apply to manual trigger type.', 'wecodeart'),
+          onChange: delay => setOptions({
+            delay: delay ? parseFloat(delay) : ''
+          })
+        }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+          label: __('Offset', 'wecodeart'),
+          value: options?.offset,
+          placeholder: "0, 0",
+          help: __('Offset of the tooltip relative to its target. You can pass a string in data attributes with comma separated values like: 10,20.', 'wecodeart'),
+          onChange: offset => setOptions({
+            offset
+          })
+        }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+          label: __('Selector', 'wecodeart'),
+          value: options?.selector,
+          placeholder: "false",
+          help: __('If a selector is provided, tooltip objects will be delegated to the specified targets.', 'wecodeart'),
+          onChange: selector => setOptions({
+            selector
+          })
+        }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+          label: __('Container', 'wecodeart'),
+          value: options?.container,
+          placeholder: "false",
+          help: __('Appends the tooltip to a specific element.', 'wecodeart'),
+          onChange: container => setOptions({
+            container
+          })
+        }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+          label: __('Custom class', 'wecodeart'),
+          value: options?.customClass,
+          help: __('Add classes to the tooltip when it is shown.', 'wecodeart'),
+          onChange: customClass => setOptions({
+            customClass
+          })
+        }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
+          label: __('Template', 'wecodeart'),
+          help: __('Base HTML to use when creating the tooltip. ', 'wecodeart'),
+          value: options?.template,
+          placeholder: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+          onChange: template => setOptions({
+            template
+          })
+        }));
+        break;
+    }
+    return render;
+  });
+};
+/* harmony default export */ __webpack_exports__["default"] = (Controls);
+
+/***/ }),
+
+/***/ "./inc/support/modules/formatting/src/js/tooltip/index.js":
+/*!****************************************************************!*\
+  !*** ./inc/support/modules/formatting/src/js/tooltip/index.js ***!
+  \****************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   tooltip: function() { return /* binding */ tooltip; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Controls__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Controls */ "./inc/support/modules/formatting/src/js/tooltip/Controls.js");
+
+/**
+ * WordPress dependencies
+ */
+const {
+  i18n: {
+    __
+  },
+  element: {
+    useState,
+    useEffect
+  },
+  components: {
+    Icon,
+    SVG,
+    Path,
+    Modal,
+    Button,
+    ButtonGroup
+  },
+  richText: {
+    applyFormat,
+    removeFormat,
+    getActiveFormat
+  },
+  blockEditor: {
+    RichTextToolbarButton
+  }
+} = wp;
+
+
+/**
+ * Block constants
+ */
+const name = 'wca/popper';
+const tooltip = {
+  name,
+  title: __('Popper', 'wecodeart'),
+  tagName: 'span',
+  className: 'has-popper',
+  attributes: {
+    'data-plugin': 'data-plugin',
+    'data-options': 'data-options',
+    'tabindex': 'tabindex'
+  },
+  edit(_ref) {
+    let {
+      isActive,
+      value,
+      onChange
+    } = _ref;
+    const activeFormat = getActiveFormat(value, name);
+    const {
+      attributes = {
+        'data-plugin': 'tooltip',
+        'data-options': JSON.stringify({
+          title: ''
+        }),
+        'tabindex': "0"
+      }
+    } = activeFormat || {};
+    const [isOpen, setIsOpen] = useState(false);
+    const toggle = () => setIsOpen(!isOpen);
+    const [state, setState] = useState({
+      ...attributes
+    });
+    useEffect(() => setState({
+      ...attributes
+    }), [activeFormat]);
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichTextToolbarButton, {
+      icon: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Icon, {
+        icon: (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SVG, {
+          style: {
+            padding: 4
+          },
+          viewBox: "0 0 16 16"
+        }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Path, {
+          d: "M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-2.5a2 2 0 0 0-1.6.8L8 14.333 6.1 11.8a2 2 0 0 0-1.6-.8H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"
+        }))
+      }),
+      title: __('Popper', 'wecodeart'),
+      onClick: toggle,
+      isActive: isActive
+    }), isOpen && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Modal, {
+      className: "wecodeart-modal wecodeart-modal--popper",
+      title: __('Settings', 'wecodeart'),
+      onRequestClose: toggle
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Controls__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      state,
+      setState
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ButtonGroup, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
+      isPrimary: true,
+      isLarge: true,
+      onClick: () => {
+        onChange(applyFormat(value, {
+          type: name,
+          attributes: state
+        }));
+        toggle();
+      }
+    }, __('Apply', 'wecodeart')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
+      isDestructive: true,
+      isLarge: true,
+      onClick: () => {
+        onChange(removeFormat(value, name));
+        toggle();
+      }
+    }, __('Remove', 'wecodeart')))));
+  }
+};
+
+/***/ }),
+
+/***/ "./inc/support/modules/formatting/src/js/underline/index.js":
+/*!******************************************************************!*\
+  !*** ./inc/support/modules/formatting/src/js/underline/index.js ***!
+  \******************************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -423,6 +1017,18 @@ const underline = {
     }));
   }
 };
+
+/***/ }),
+
+/***/ "./inc/support/modules/formatting/src/scss/index.scss":
+/*!************************************************************!*\
+  !*** ./inc/support/modules/formatting/src/scss/index.scss ***!
+  \************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
 
 /***/ }),
 
@@ -517,13 +1123,27 @@ module.exports = window["wp"]["primitives"];
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 !function() {
-/*!************************************************!*\
-  !*** ./inc/support/formatting/src/js/index.js ***!
-  \************************************************/
+/*!********************************************************!*\
+  !*** ./inc/support/modules/formatting/src/js/index.js ***!
+  \********************************************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _justify__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./justify */ "./inc/support/formatting/src/js/justify/index.js");
-/* harmony import */ var _underline__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./underline */ "./inc/support/formatting/src/js/underline/index.js");
-/* harmony import */ var _abbreviation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./abbreviation */ "./inc/support/formatting/src/js/abbreviation/index.js");
+/* harmony import */ var _tooltip__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./tooltip */ "./inc/support/modules/formatting/src/js/tooltip/index.js");
+/* harmony import */ var _justify__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./justify */ "./inc/support/modules/formatting/src/js/justify/index.js");
+/* harmony import */ var _underline__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./underline */ "./inc/support/modules/formatting/src/js/underline/index.js");
+/* harmony import */ var _decoration__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./decoration */ "./inc/support/modules/formatting/src/js/decoration/index.js");
+/* harmony import */ var _abbreviation__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./abbreviation */ "./inc/support/modules/formatting/src/js/abbreviation/index.js");
+/* harmony import */ var _plugin__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./plugin */ "./inc/support/modules/formatting/src/js/plugin/index.js");
+/* harmony import */ var _scss_index_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./../scss/index.scss */ "./inc/support/modules/formatting/src/scss/index.scss");
+/**
+ * WordPress dependencies
+ */
+const {
+  registerFormatType
+} = wp.richText;
+const {
+  registerPlugin
+} = wp.plugins;
+
 /**
  * Internal dependencies
  */
@@ -531,26 +1151,34 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-/**
- * WordPress dependencies
- */
-const {
-  registerFormatType,
-  unregisterFormatType
-} = wp.richText;
+
+
+
 function registerWeCodeArtFormats() {
-  [_justify__WEBPACK_IMPORTED_MODULE_0__.justify, _underline__WEBPACK_IMPORTED_MODULE_1__.underline, _abbreviation__WEBPACK_IMPORTED_MODULE_2__.abbreviation].forEach(_ref => {
+  [_tooltip__WEBPACK_IMPORTED_MODULE_0__.tooltip, _justify__WEBPACK_IMPORTED_MODULE_1__.justify, _underline__WEBPACK_IMPORTED_MODULE_2__.underline, _decoration__WEBPACK_IMPORTED_MODULE_3__.decoration, _abbreviation__WEBPACK_IMPORTED_MODULE_4__.abbreviation].forEach(_ref => {
     let {
       name,
       ...settings
     } = _ref;
     if (name) {
-      unregisterFormatType(name);
       registerFormatType(name, settings);
     }
   });
 }
-wp.domReady(registerWeCodeArtFormats);
+function registerFormattingPlugin() {
+  const {
+    name,
+    render
+  } = _plugin__WEBPACK_IMPORTED_MODULE_5__["default"];
+  registerPlugin(name, {
+    icon: false,
+    render
+  });
+}
+wp.domReady(() => {
+  registerWeCodeArtFormats();
+  registerFormattingPlugin();
+});
 }();
 /******/ })()
 ;
