@@ -362,17 +362,13 @@ __webpack_require__.r(__webpack_exports__);
         return null;
       }
     }
-    removeClasses() {
-      return null;
-    }
 
     /**
      * Teardown component
      */
     destroy() {
       if (Popper.getInstance(this.el)) {
-        this.removeClasses();
-        this.setupEventHandlers();
+        this.removeEventHandlers();
         const index = Popper.elements.indexOf(this);
         Popper.elements.splice(index, 1);
         this.el.Popper = undefined;

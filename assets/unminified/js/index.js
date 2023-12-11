@@ -592,10 +592,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./inc/support/modules/formatting/src/js/tooltip/Controls.js":
-/*!*******************************************************************!*\
-  !*** ./inc/support/modules/formatting/src/js/tooltip/Controls.js ***!
-  \*******************************************************************/
+/***/ "./inc/support/modules/formatting/src/js/popper/Controls.js":
+/*!******************************************************************!*\
+  !*** ./inc/support/modules/formatting/src/js/popper/Controls.js ***!
+  \******************************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -615,7 +615,10 @@ const {
     __experimentalNumberControl: NumberControl,
     TextControl,
     TextareaControl,
-    TabPanel
+    TabPanel,
+    Panel,
+    PanelBody,
+    PanelRow
   }
 } = wp;
 const Controls = _ref => {
@@ -649,7 +652,7 @@ const Controls = _ref => {
       title: __('Options', 'wecodeart')
     }]
   }, _ref3 => {
-    var _state$dataPlugin, _options$html, _options$animation, _options$sanitize, _options$placement;
+    var _state$dataPlugin, _options$placement, _options$animation, _options$html, _options$sanitize;
     let {
       name
     } = _ref3;
@@ -670,13 +673,6 @@ const Controls = _ref => {
             ...state,
             'data-plugin': type
           })
-        }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
-          label: __('HTML', 'wecodeart'),
-          checked: (_options$html = options?.html) !== null && _options$html !== void 0 ? _options$html : false,
-          help: __('Allow HTML in the tooltip.', 'wecodeart'),
-          onChange: html => setOptions({
-            html
-          })
         }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
           label: __('Title', 'wecodeart'),
           value: options?.title,
@@ -692,44 +688,15 @@ const Controls = _ref => {
         }));
         break;
       case 'options':
-        render = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
-          label: __('Animation', 'wecodeart'),
-          checked: (_options$animation = options?.animation) !== null && _options$animation !== void 0 ? _options$animation : true,
-          help: __('Apply a CSS fade transition to the tooltip.', 'wecodeart'),
-          onChange: animation => setOptions({
-            animation
-          })
-        }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
-          label: __('Sanitize', 'wecodeart'),
-          checked: (_options$sanitize = options?.sanitize) !== null && _options$sanitize !== void 0 ? _options$sanitize : true,
-          help: __(`Enable or disable the sanitization. If activated 'template', 'content' and 'title' options will be sanitized.`, 'wecodeart'),
-          onChange: sanitize => setOptions({
-            sanitize
-          })
-        }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
-          label: __('Trigger', 'wecodeart'),
-          value: options?.trigger ? options.trigger.split(' ') : ['hover', 'focus'],
-          multiple: true,
-          options: [{
-            label: __('Hover', 'wecodeart'),
-            value: 'hover'
-          }, {
-            label: __('Focus', 'wecodeart'),
-            value: 'focus'
-          }, {
-            label: __('Click', 'wecodeart'),
-            value: 'click'
-          }, {
-            label: __('Manual', 'wecodeart'),
-            value: 'manual'
-          }],
-          onChange: trigger => setOptions({
-            trigger: trigger.join(' ')
-          })
-        }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
+        function templatePlaceholder() {
+          var _state$dataPlugin2;
+          const type = (_state$dataPlugin2 = state?.['data-plugin']) !== null && _state$dataPlugin2 !== void 0 ? _state$dataPlugin2 : 'tooltip';
+          return `<div class="${type}" role="tooltip"><div class="${type}-arrow"></div><div class="${type}-inner"></div></div>`;
+        }
+        render = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
           label: __('Placement', 'wecodeart'),
           value: (_options$placement = options?.placement) !== null && _options$placement !== void 0 ? _options$placement : 'auto',
-          help: __('How to position the tooltip: auto, top, bottom, left, right.', 'wecodeart'),
+          help: __('How to position the tooltip.', 'wecodeart'),
           options: [{
             label: __('Auto', 'wecodeart'),
             value: 'auto'
@@ -755,7 +722,7 @@ const Controls = _ref => {
           placeholder: "0",
           min: 0,
           step: 10,
-          help: __('Delay showing and hiding the popover (ms)—doesn`t apply to manual trigger type.', 'wecodeart'),
+          help: __('Delay showing and hiding the popover (ms) — doesn`t apply to manual trigger type.', 'wecodeart'),
           onChange: delay => setOptions({
             delay: delay ? parseFloat(delay) : ''
           })
@@ -763,9 +730,41 @@ const Controls = _ref => {
           label: __('Offset', 'wecodeart'),
           value: options?.offset,
           placeholder: "0, 0",
-          help: __('Offset of the tooltip relative to its target. You can pass a string in data attributes with comma separated values like: 10,20.', 'wecodeart'),
+          help: __('Offset of the tooltip relative to its target — comma separated values like: 10,20.', 'wecodeart'),
           onChange: offset => setOptions({
             offset
+          })
+        }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, {
+          className: "wecodeart-panel wecodeart-panel--advanced"
+        }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+          title: __('Advanced settings', 'wecodeart'),
+          initialOpen: false
+        }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
+          label: __('Trigger', 'wecodeart'),
+          value: options?.trigger ? options.trigger.split(' ') : ['hover', 'focus'],
+          multiple: true,
+          options: [{
+            label: __('Hover', 'wecodeart'),
+            value: 'hover'
+          }, {
+            label: __('Focus', 'wecodeart'),
+            value: 'focus'
+          }, {
+            label: __('Click', 'wecodeart'),
+            value: 'click'
+          }, {
+            label: __('Manual', 'wecodeart'),
+            value: 'manual'
+          }],
+          onChange: trigger => setOptions({
+            trigger: trigger.join(' ')
+          })
+        }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
+          label: __('Animation', 'wecodeart'),
+          checked: (_options$animation = options?.animation) !== null && _options$animation !== void 0 ? _options$animation : true,
+          help: __('Apply a CSS fade transition to the tooltip.', 'wecodeart'),
+          onChange: animation => setOptions({
+            animation
           })
         }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
           label: __('Selector', 'wecodeart'),
@@ -790,15 +789,29 @@ const Controls = _ref => {
           onChange: customClass => setOptions({
             customClass
           })
+        }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
+          label: __('HTML', 'wecodeart'),
+          checked: (_options$html = options?.html) !== null && _options$html !== void 0 ? _options$html : false,
+          help: __('Allow HTML in the tooltip.', 'wecodeart'),
+          onChange: html => setOptions({
+            html
+          })
+        }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
+          label: __('Sanitize', 'wecodeart'),
+          checked: (_options$sanitize = options?.sanitize) !== null && _options$sanitize !== void 0 ? _options$sanitize : true,
+          help: __(`Enable or disable the sanitization. If activated 'template', 'content' and 'title' options will be sanitized.`, 'wecodeart'),
+          onChange: sanitize => setOptions({
+            sanitize
+          })
         }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
           label: __('Template', 'wecodeart'),
           help: __('Base HTML to use when creating the tooltip. ', 'wecodeart'),
           value: options?.template,
-          placeholder: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+          placeholder: templatePlaceholder(),
           onChange: template => setOptions({
             template
           })
-        }));
+        })))));
         break;
     }
     return render;
@@ -808,19 +821,19 @@ const Controls = _ref => {
 
 /***/ }),
 
-/***/ "./inc/support/modules/formatting/src/js/tooltip/index.js":
-/*!****************************************************************!*\
-  !*** ./inc/support/modules/formatting/src/js/tooltip/index.js ***!
-  \****************************************************************/
+/***/ "./inc/support/modules/formatting/src/js/popper/index.js":
+/*!***************************************************************!*\
+  !*** ./inc/support/modules/formatting/src/js/popper/index.js ***!
+  \***************************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   tooltip: function() { return /* binding */ tooltip; }
+/* harmony export */   popper: function() { return /* binding */ popper; }
 /* harmony export */ });
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Controls__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Controls */ "./inc/support/modules/formatting/src/js/tooltip/Controls.js");
+/* harmony import */ var _Controls__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Controls */ "./inc/support/modules/formatting/src/js/popper/Controls.js");
 
 /**
  * WordPress dependencies
@@ -856,7 +869,7 @@ const {
  * Block constants
  */
 const name = 'wca/popper';
-const tooltip = {
+const popper = {
   name,
   title: __('Popper', 'wecodeart'),
   tagName: 'span',
@@ -1127,7 +1140,7 @@ var __webpack_exports__ = {};
   !*** ./inc/support/modules/formatting/src/js/index.js ***!
   \********************************************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _tooltip__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./tooltip */ "./inc/support/modules/formatting/src/js/tooltip/index.js");
+/* harmony import */ var _popper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./popper */ "./inc/support/modules/formatting/src/js/popper/index.js");
 /* harmony import */ var _justify__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./justify */ "./inc/support/modules/formatting/src/js/justify/index.js");
 /* harmony import */ var _underline__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./underline */ "./inc/support/modules/formatting/src/js/underline/index.js");
 /* harmony import */ var _decoration__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./decoration */ "./inc/support/modules/formatting/src/js/decoration/index.js");
@@ -1155,7 +1168,7 @@ const {
 
 
 function registerWeCodeArtFormats() {
-  [_tooltip__WEBPACK_IMPORTED_MODULE_0__.tooltip, _justify__WEBPACK_IMPORTED_MODULE_1__.justify, _underline__WEBPACK_IMPORTED_MODULE_2__.underline, _decoration__WEBPACK_IMPORTED_MODULE_3__.decoration, _abbreviation__WEBPACK_IMPORTED_MODULE_4__.abbreviation].forEach(_ref => {
+  [_popper__WEBPACK_IMPORTED_MODULE_0__.popper, _justify__WEBPACK_IMPORTED_MODULE_1__.justify, _underline__WEBPACK_IMPORTED_MODULE_2__.underline, _decoration__WEBPACK_IMPORTED_MODULE_3__.decoration, _abbreviation__WEBPACK_IMPORTED_MODULE_4__.abbreviation].forEach(_ref => {
     let {
       name,
       ...settings

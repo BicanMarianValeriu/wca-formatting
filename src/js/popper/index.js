@@ -34,7 +34,7 @@ import Controls from './Controls';
  */
 const name = 'wca/popper';
 
-export const tooltip = {
+export const popper = {
 	name,
 	title: __('Popper', 'wecodeart'),
 	tagName: 'span',
