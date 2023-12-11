@@ -1,13 +1,18 @@
 /*!***************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./inc/support/modules/formatting/src/scss/index.scss ***!
   \***************************************************************************************************************************************************************************************************************************************************************************/
+.wecodeart-modal--popper .components-modal__content {
+  margin-bottom: 2rem;
+}
 .wecodeart-modal--popper .components-button-group {
   position: absolute;
   bottom: 0;
   right: 0;
   left: 0;
   display: flex;
+  padding: 1rem 2rem;
   background-color: white;
+  border-top: 1px solid #e0e0e0;
 }
 .wecodeart-modal--popper .components-button-group .components-button {
   flex: 0 0 50%;
@@ -16,7 +21,7 @@
 }
 
 .wecodeart-tabs--popper {
-  --wp--spacing: 32px;
+  --wp--spacing: 2rem;
   margin: 0 calc(-1 * var(--wp--spacing));
 }
 .wecodeart-tabs--popper .components-tab-panel__tabs {
@@ -51,9 +56,35 @@
   overflow-y: auto;
 }
 .wecodeart-tabs--popper .components-base-control:not(:last-child) {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 .wecodeart-tabs--popper .components-base-control:last-child {
+  margin-bottom: 0;
+}
+
+.wecodeart-panel--advanced {
+  margin-left: calc(-1 * var(--wp--spacing));
+  margin-right: calc(-1 * var(--wp--spacing));
+}
+.wecodeart-panel--advanced .components-panel__body {
+  border-top: 0;
+}
+.wecodeart-panel--advanced .components-panel__body.is-opened {
+  padding: var(--wp--spacing);
+}
+.wecodeart-panel--advanced .components-panel__body.is-opened .components-panel__body-title {
+  margin: calc(-1 * var(--wp--spacing)) calc(-1 * var(--wp--spacing)) 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+.wecodeart-panel--advanced .components-panel__body-toggle {
+  padding-left: var(--wp--spacing);
+  padding-right: var(--wp--spacing);
+}
+.wecodeart-panel--advanced .components-panel__row {
+  flex-direction: column;
+  align-items: stretch;
+}
+.wecodeart-panel--advanced .components-panel__row .components-base-control__field {
   margin-bottom: 0;
 }
 

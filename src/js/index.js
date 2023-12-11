@@ -7,7 +7,7 @@ const { registerPlugin } = wp.plugins;
 /**
  * Internal dependencies
  */
-import { tooltip } from './tooltip';
+import { popper } from './popper';
 import { justify } from './justify';
 import { underline } from './underline';
 import { decoration } from './decoration';
@@ -18,7 +18,7 @@ import './../scss/index.scss';
 
 function registerWeCodeArtFormats() {
 	[
-		tooltip,
+		popper,
 		justify,
 		underline,
 		decoration,
