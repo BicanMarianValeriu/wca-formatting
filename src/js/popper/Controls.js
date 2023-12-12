@@ -19,24 +19,24 @@ const {
 } = wp;
 
 const Controls = ({ state, setState }) => {
-    const options = JSON.parse(state?.['data-options'] || '{}');
-
-    const escapeHTML = (unsafe) => {
-        return unsafe.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+    const escapeHtml = (unsafe) => {
+        return unsafe.replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
     }
 
     const unEscapeHTML = (input) => {
         const e = document.createElement('textarea');
         e.innerHTML = input;
-        
+
         return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
     }
+
+    const options = JSON.parse(unEscapeHTML(state?.['data-options']) || '{}');
 
     const setOptions = (value) => {
         let newOptions = { ...options, ...value };
         newOptions = Object.fromEntries(Object.entries(newOptions).filter(([_, v]) => v !== null && v !== ''));
 
-        setState({ ...state, 'data-options': JSON.stringify(newOptions) });
+        setState({ ...state, 'data-options': escapeHtml(JSON.stringify(newOptions)) });
     };
 
     return (
@@ -71,14 +71,14 @@ const Controls = ({ state, setState }) => {
                             />
                             <TextareaControl
                                 label={__('Title', 'wecodeart')}
-                                value={unEscapeHTML(options?.title)}
-                                onChange={(title) => setOptions({ title: escapeHTML(title) })}
+                                value={options?.title}
+                                onChange={(title) => setOptions({ title })}
                             />
                             {state?.['data-plugin'] === 'popover' && (
                                 <TextareaControl
                                     label={__('Content', 'wecodeart')}
-                                    value={unEscapeHTML(options?.content)}
-                                    onChange={(content) => setOptions({ content: escapeHTML(content) })}
+                                    value={options?.content}
+                                    onChange={(content) => setOptions({ content })}
                                 />
                             )}
                         </>
@@ -135,12 +135,6 @@ const Controls = ({ state, setState }) => {
                                             ]}
                                             onChange={(trigger) => setOptions({ trigger: trigger.join(' ') })}
                                         />
-                                        <ToggleControl
-                                            label={__('Animation', 'wecodeart')}
-                                            checked={options?.animation ?? true}
-                                            help={__('Apply a CSS fade transition to the tooltip.', 'wecodeart')}
-                                            onChange={(animation) => setOptions({ animation })}
-                                        />
                                         <TextControl
                                             label={__('Selector', 'wecodeart')}
                                             value={options?.selector}
@@ -162,9 +156,15 @@ const Controls = ({ state, setState }) => {
                                             onChange={(customClass) => setOptions({ customClass })}
                                         />
                                         <ToggleControl
+                                            label={__('Animation', 'wecodeart')}
+                                            checked={options?.animation ?? true}
+                                            help={__('Apply a CSS fade transition to the tooltip.', 'wecodeart')}
+                                            onChange={(animation) => setOptions({ animation })}
+                                        />
+                                        <ToggleControl
                                             label={__('HTML', 'wecodeart')}
                                             checked={options?.html ?? false}
-                                            help={__('Allow HTML in the tooltip.', 'wecodeart')}
+                                            help={__('Allow HTML in the tooltip. Using this option might break the layout - if it does, remove all block formatting and try again.', 'wecodeart')}
                                             onChange={(html) => setOptions({ html })}
                                         />
                                         <ToggleControl

@@ -626,16 +626,15 @@ const Controls = _ref => {
     state,
     setState
   } = _ref;
-  const options = JSON.parse(state?.['data-options'] || '{}');
-  const escapeHTML = unsafe => {
-    return unsafe.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+  const escapeHtml = unsafe => {
+    return unsafe.replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
   };
   const unEscapeHTML = input => {
-    var e = document.createElement('textarea');
+    const e = document.createElement('textarea');
     e.innerHTML = input;
-    // handle case of empty input
     return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
   };
+  const options = JSON.parse(unEscapeHTML(state?.['data-options']) || '{}');
   const setOptions = value => {
     let newOptions = {
       ...options,
@@ -647,7 +646,7 @@ const Controls = _ref => {
     }));
     setState({
       ...state,
-      'data-options': JSON.stringify(newOptions)
+      'data-options': escapeHtml(JSON.stringify(newOptions))
     });
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TabPanel, {
@@ -684,15 +683,15 @@ const Controls = _ref => {
           })
         }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
           label: __('Title', 'wecodeart'),
-          value: unEscapeHTML(options?.title),
+          value: options?.title,
           onChange: title => setOptions({
-            title: escapeHTML(title)
+            title
           })
         }), state?.['data-plugin'] === 'popover' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
           label: __('Content', 'wecodeart'),
-          value: unEscapeHTML(options?.content),
+          value: options?.content,
           onChange: content => setOptions({
-            content: escapeHTML(content)
+            content
           })
         }));
         break;
@@ -768,13 +767,6 @@ const Controls = _ref => {
           onChange: trigger => setOptions({
             trigger: trigger.join(' ')
           })
-        }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
-          label: __('Animation', 'wecodeart'),
-          checked: (_options$animation = options?.animation) !== null && _options$animation !== void 0 ? _options$animation : true,
-          help: __('Apply a CSS fade transition to the tooltip.', 'wecodeart'),
-          onChange: animation => setOptions({
-            animation
-          })
         }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
           label: __('Selector', 'wecodeart'),
           value: options?.selector,
@@ -799,9 +791,16 @@ const Controls = _ref => {
             customClass
           })
         }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
+          label: __('Animation', 'wecodeart'),
+          checked: (_options$animation = options?.animation) !== null && _options$animation !== void 0 ? _options$animation : true,
+          help: __('Apply a CSS fade transition to the tooltip.', 'wecodeart'),
+          onChange: animation => setOptions({
+            animation
+          })
+        }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
           label: __('HTML', 'wecodeart'),
           checked: (_options$html = options?.html) !== null && _options$html !== void 0 ? _options$html : false,
-          help: __('Allow HTML in the tooltip.', 'wecodeart'),
+          help: __('Allow HTML in the tooltip. Using this option might break the layout - if it does, remove all block formatting and try again.', 'wecodeart'),
           onChange: html => setOptions({
             html
           })
