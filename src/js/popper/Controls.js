@@ -21,6 +21,17 @@ const {
 const Controls = ({ state, setState }) => {
     const options = JSON.parse(state?.['data-options'] || '{}');
 
+    const escapeHTML = (unsafe) => {
+        return unsafe.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+    }
+
+    const unEscapeHTML = (input) => {
+        const e = document.createElement('textarea');
+        e.innerHTML = input;
+        
+        return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+    }
+
     const setOptions = (value) => {
         let newOptions = { ...options, ...value };
         newOptions = Object.fromEntries(Object.entries(newOptions).filter(([_, v]) => v !== null && v !== ''));
@@ -60,14 +71,14 @@ const Controls = ({ state, setState }) => {
                             />
                             <TextareaControl
                                 label={__('Title', 'wecodeart')}
-                                value={options?.title}
-                                onChange={(title) => setOptions({ title })}
+                                value={unEscapeHTML(options?.title)}
+                                onChange={(title) => setOptions({ title: escapeHTML(title) })}
                             />
                             {state?.['data-plugin'] === 'popover' && (
                                 <TextareaControl
                                     label={__('Content', 'wecodeart')}
-                                    value={options?.content}
-                                    onChange={(content) => setOptions({ content })}
+                                    value={unEscapeHTML(options?.content)}
+                                    onChange={(content) => setOptions({ content: escapeHTML(content) })}
                                 />
                             )}
                         </>
@@ -78,7 +89,7 @@ const Controls = ({ state, setState }) => {
 
                             return `<div class="${type}" role="tooltip"><div class="${type}-arrow"></div><div class="${type}-inner"></div></div>`;
                         }
-                        
+
                         render = <>
                             <SelectControl
                                 label={__('Placement', 'wecodeart')}
