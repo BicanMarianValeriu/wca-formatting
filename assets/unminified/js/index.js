@@ -627,6 +627,15 @@ const Controls = _ref => {
     setState
   } = _ref;
   const options = JSON.parse(state?.['data-options'] || '{}');
+  const escapeHTML = unsafe => {
+    return unsafe.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+  };
+  const unEscapeHTML = input => {
+    var e = document.createElement('textarea');
+    e.innerHTML = input;
+    // handle case of empty input
+    return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+  };
   const setOptions = value => {
     let newOptions = {
       ...options,
@@ -675,15 +684,15 @@ const Controls = _ref => {
           })
         }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
           label: __('Title', 'wecodeart'),
-          value: options?.title,
+          value: unEscapeHTML(options?.title),
           onChange: title => setOptions({
-            title
+            title: escapeHTML(title)
           })
         }), state?.['data-plugin'] === 'popover' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
           label: __('Content', 'wecodeart'),
-          value: options?.content,
+          value: unEscapeHTML(options?.content),
           onChange: content => setOptions({
-            content
+            content: escapeHTML(content)
           })
         }));
         break;
