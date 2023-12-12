@@ -109,6 +109,34 @@ final class Formatting implements Integration {
 					'value' => 'brush',
 				],
 				[
+					'label' => __( 'Brush - Secondary', 'wecodeart' ),
+					'value' => 'brush-secondary',
+				],
+				[
+					'label' => __( 'Pencil', 'wecodeart' ),
+					'value' => 'pencil',
+				],
+				[
+					'label' => __( 'Lines', 'wecodeart' ),
+					'value' => 'lines',
+				],
+				[
+					'label' => __( 'Lines - Secondary', 'wecodeart' ),
+					'value' => 'lines-secondary',
+				],
+				[
+					'label' => __( 'Oval', 'wecodeart' ),
+					'value' => 'oval',
+				],
+				[
+					'label' => __( 'Oval - Secondary', 'wecodeart' ),
+					'value' => 'oval-secondary',
+				],
+				[
+					'label' => __( 'Oval - Tertiary', 'wecodeart' ),
+					'value' => 'oval-tertiary',
+				],
+				[
 					'label' => __( 'Marker', 'wecodeart' ),
 					'value' => 'marker',
 				]
