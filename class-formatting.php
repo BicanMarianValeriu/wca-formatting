@@ -55,9 +55,13 @@ final class Formatting implements Integration {
 			'path' 		=> $this->get_asset( 'js', 'front' ),
 			'deps'		=> [ 'wecodeart-support-assets' ],
 			'load'		=> function( $blocks, $content, $template ) {
+				if( str_contains( $content, 'has-decoration' ) || str_contains( $template, 'has-decoration' ) ) {
+					wecodeart( 'styles' )->Components->load( [ 'modules/formatting' ] );
+				}
+				
 				if( str_contains( $content, 'has-popper' ) || str_contains( $template, 'has-popper' ) ) {
-					wecodeart( 'styles' )->Components->load( [ 'modules/formatting', 'tooltip', 'popover' ] );
-
+					wecodeart( 'styles' )->Components->load( [ 'tooltip', 'popover' ] );
+					
 					return true;
 				}
 
