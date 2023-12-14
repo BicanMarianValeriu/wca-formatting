@@ -626,15 +626,18 @@ const Controls = _ref => {
     state,
     setState
   } = _ref;
-  const escapeHtml = unsafe => {
-    return unsafe.replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
-  };
-  const unEscapeHTML = input => {
-    const e = document.createElement('textarea');
-    e.innerHTML = input;
-    return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
-  };
-  const options = JSON.parse(unEscapeHTML(state?.['data-options']) || '{}');
+  // const escapeHtml = (unsafe) => {
+  //     return unsafe.replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+  // }
+
+  // const unEscapeHTML = (input) => {
+  //     const e = document.createElement('textarea');
+  //     e.innerHTML = input;
+
+  //     return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+  // }
+
+  const options = JSON.parse(decodeURIComponent(state?.['data-options'] || '{}'));
   const setOptions = value => {
     let newOptions = {
       ...options,
@@ -646,7 +649,7 @@ const Controls = _ref => {
     }));
     setState({
       ...state,
-      'data-options': escapeHtml(JSON.stringify(newOptions))
+      'data-options': encodeURIComponent(JSON.stringify(newOptions))
     });
   };
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TabPanel, {
@@ -800,7 +803,7 @@ const Controls = _ref => {
         }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
           label: __('HTML', 'wecodeart'),
           checked: (_options$html = options?.html) !== null && _options$html !== void 0 ? _options$html : false,
-          help: __('Allow HTML in the tooltip. Using this option might break the layout - if it does, remove all block formatting and try again.', 'wecodeart'),
+          help: __('Allow HTML in the tooltip.', 'wecodeart'),
           onChange: html => setOptions({
             html
           })

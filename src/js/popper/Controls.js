@@ -19,24 +19,24 @@ const {
 } = wp;
 
 const Controls = ({ state, setState }) => {
-    const escapeHtml = (unsafe) => {
-        return unsafe.replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
-    }
+    // const escapeHtml = (unsafe) => {
+    //     return unsafe.replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+    // }
 
-    const unEscapeHTML = (input) => {
-        const e = document.createElement('textarea');
-        e.innerHTML = input;
+    // const unEscapeHTML = (input) => {
+    //     const e = document.createElement('textarea');
+    //     e.innerHTML = input;
 
-        return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
-    }
+    //     return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+    // }
 
-    const options = JSON.parse(unEscapeHTML(state?.['data-options']) || '{}');
+    const options = JSON.parse(decodeURIComponent(state?.['data-options'] || '{}'));
 
     const setOptions = (value) => {
         let newOptions = { ...options, ...value };
         newOptions = Object.fromEntries(Object.entries(newOptions).filter(([_, v]) => v !== null && v !== ''));
 
-        setState({ ...state, 'data-options': escapeHtml(JSON.stringify(newOptions)) });
+        setState({ ...state, 'data-options': encodeURIComponent(JSON.stringify(newOptions)) });
     };
 
     return (
@@ -164,7 +164,7 @@ const Controls = ({ state, setState }) => {
                                         <ToggleControl
                                             label={__('HTML', 'wecodeart')}
                                             checked={options?.html ?? false}
-                                            help={__('Allow HTML in the tooltip. Using this option might break the layout - if it does, remove all block formatting and try again.', 'wecodeart')}
+                                            help={__('Allow HTML in the tooltip.', 'wecodeart')}
                                             onChange={(html) => setOptions({ html })}
                                         />
                                         <ToggleControl

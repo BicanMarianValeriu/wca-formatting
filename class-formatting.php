@@ -20,6 +20,7 @@ use WeCodeArt\Singleton;
 use WeCodeArt\Integration;
 use WeCodeArt\Config\Traits\Asset;
 use WeCodeArt\Conditional\Traits\No_Conditionals;
+use function WeCodeArt\Functions\get_prop;
 
 /**
  * The Formatting object.
@@ -43,6 +44,40 @@ final class Formatting implements Integration {
 
 		// Default text decoration styles.
 		\add_filter( 'wecodeart/filter/gutenberg/settings',	[ $this, 'decoration_styles'	], 20, 2 );
+
+		// Decode url encoded options.
+		add_filter( 'render_block', 						[ $this, 'render_block' 		], 20, 2 );
+	}
+
+	/**
+	 * Filter render.
+	 *
+	 * @return  string
+	 */
+	public function render_block( $content, $block ): string {
+		if ( strpos( $content, 'data-options="' ) === false ) {
+			return $content;
+		}
+
+		// Use a regular expression to find all instances of 'data-options' attribute
+		$pattern = '/data-options="([^"]*)"/';
+
+		// Replace callback function
+		$callback = function( $matches ) {
+			$decoded 	= urldecode( $matches[1] );
+			$json 		= json_decode( $decoded, true );
+			
+			if ( json_last_error() === JSON_ERROR_NONE ) {
+				$encoded = json_encode( $json, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+				$encoded = str_replace( "'", "`", $encoded );
+				
+				return 'data-options="' . esc_attr( $encoded ) . '"';
+			}
+
+			return $matches[0];
+		};
+
+		return preg_replace_callback( $pattern, $callback, $content );
 	}
 
 	/**
