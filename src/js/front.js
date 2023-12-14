@@ -54,7 +54,36 @@ export default (function (wecodeart) {
 		 * Setup Events
 		 */
 		setupEventHandlers() {
-			return null;
+			const lazyPlugins = () => {
+				const { plugin = 'tooltip' } = this.el.dataset;
+
+				switch (plugin) {
+					case 'tooltip':
+						(async () => {
+							const { default: Tooltip } = await import( /* webpackChunkName: "tooltip" */ "bootstrap/js/dist/tooltip");
+							const plugin = new Tooltip(this.el, this.options);
+							const { trigger = 'hover focus' } = this.options;
+							if (/hover|focus/.test(trigger)) {
+								plugin.show();
+							}
+						})();
+						break;
+					case 'popover':
+						(async () => {
+							const { default: Popover } = await import( /* webpackChunkName: "popover" */ "bootstrap/js/dist/popover");
+							const plugin = new Popover(this.el, this.options);
+							const { trigger = '' } = this.options;
+							if (/hover|focus/.test(trigger)) {
+								plugin.show();
+							}
+						})();
+						break;
+				}
+			}
+
+			this.lazyPlugins = lazyPlugins.bind(this);
+			this.el.addEventListener('mouseenter', this.lazyPlugins, { once: true });
+			this.el.addEventListener('touchstart', this.lazyPlugins, { once: true });
 		}
 
 		/**
@@ -62,7 +91,8 @@ export default (function (wecodeart) {
 		 */
 		removeEventHandlers() {
 			if (Popper.getInstance(this.el)) {
-				return null;
+				this.el.removeEventListener('mouseenter', this.lazyPlugins);
+				this.el.removeEventListener('touchstart', this.lazyPlugins);
 			}
 		}
 
@@ -82,22 +112,7 @@ export default (function (wecodeart) {
 		 * Build
 		 */
 		build() {
-			const { plugin = 'tooltip' } = this.el.dataset;
-
-			switch (plugin) {
-				case 'tooltip':
-					(async () => {
-						const { default: Tooltip } = await import( /* webpackChunkName: "tooltip" */ "bootstrap/js/dist/tooltip");
-						return new Tooltip(this.el, this.options);
-					})()
-					break;
-				case 'popover':
-					(async () => {
-						const { default: Popover } = await import( /* webpackChunkName: "popover" */ "bootstrap/js/dist/popover");
-						return new Popover(this.el, this.options);
-					})()
-					break;
-			}
+			return null;
 		}
 	}
 

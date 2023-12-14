@@ -3,6 +3,7 @@
         .components-modal {
             &__content {
                 margin-bottom: 2rem;
+                overflow: hidden;
             }
         }
 
@@ -65,7 +66,7 @@
             &__tab {
                 &-content {
                     padding: var(--wp--spacing);
-                    max-height: 455px;
+                    max-height: 450px;
                     max-width: 350px;
                     overflow-y: auto;
                 }
@@ -117,6 +118,12 @@
                 .components-base-control__field {
                     margin-bottom: 0;
                 }
+            }
+        }
+
+        .components-base-control {
+            &__help {
+                margin-bottom: 0;
             }
         }
     }

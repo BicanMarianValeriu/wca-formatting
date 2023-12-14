@@ -19,17 +19,6 @@ const {
 } = wp;
 
 const Controls = ({ state, setState }) => {
-    // const escapeHtml = (unsafe) => {
-    //     return unsafe.replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
-    // }
-
-    // const unEscapeHTML = (input) => {
-    //     const e = document.createElement('textarea');
-    //     e.innerHTML = input;
-
-    //     return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
-    // }
-
     const options = JSON.parse(decodeURIComponent(state?.['data-options'] || '{}'));
 
     const setOptions = (value) => {
@@ -67,7 +56,7 @@ const Controls = ({ state, setState }) => {
                                     { label: 'Tooltip', value: 'tooltip' },
                                     { label: 'Popover', value: 'popover' },
                                 ]}
-                                onChange={(type) => setState({ ...state, 'data-plugin': type })}
+                                onChange={(type) => setState({ 'data-plugin': type })}
                             />
                             <TextareaControl
                                 label={__('Title', 'wecodeart')}
@@ -93,9 +82,10 @@ const Controls = ({ state, setState }) => {
                         render = <>
                             <SelectControl
                                 label={__('Placement', 'wecodeart')}
-                                value={options?.placement ?? 'auto'}
+                                value={options?.placement}
                                 help={__('How to position the tooltip.', 'wecodeart')}
                                 options={[
+                                    { label: __('Default', 'wecodeart'), value: '' },
                                     { label: __('Auto', 'wecodeart'), value: 'auto' },
                                     { label: __('Top', 'wecodeart'), value: 'top' },
                                     { label: __('Left', 'wecodeart'), value: 'left' },
@@ -125,9 +115,11 @@ const Controls = ({ state, setState }) => {
                                     <PanelRow>
                                         <SelectControl
                                             label={__('Trigger', 'wecodeart')}
-                                            value={options?.trigger ? options.trigger.split(' ') : ['hover', 'focus']}
+                                            value={options?.trigger ? options.trigger.split(' ') : ['']}
                                             multiple={true}
+                                            help={__('How tooltip is triggered: click, hover, focus, manual.', 'wecodeart')}
                                             options={[
+                                                { label: __('Default', 'wecodeart'), value: '' },
                                                 { label: __('Hover', 'wecodeart'), value: 'hover' },
                                                 { label: __('Focus', 'wecodeart'), value: 'focus' },
                                                 { label: __('Click', 'wecodeart'), value: 'click' },

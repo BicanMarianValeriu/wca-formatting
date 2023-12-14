@@ -626,17 +626,6 @@ const Controls = _ref => {
     state,
     setState
   } = _ref;
-  // const escapeHtml = (unsafe) => {
-  //     return unsafe.replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
-  // }
-
-  // const unEscapeHTML = (input) => {
-  //     const e = document.createElement('textarea');
-  //     e.innerHTML = input;
-
-  //     return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
-  // }
-
   const options = JSON.parse(decodeURIComponent(state?.['data-options'] || '{}'));
   const setOptions = value => {
     let newOptions = {
@@ -663,7 +652,7 @@ const Controls = _ref => {
       title: __('Options', 'wecodeart')
     }]
   }, _ref3 => {
-    var _state$dataPlugin, _options$placement, _options$animation, _options$html, _options$sanitize;
+    var _state$dataPlugin, _options$animation, _options$html, _options$sanitize;
     let {
       name
     } = _ref3;
@@ -681,7 +670,6 @@ const Controls = _ref => {
             value: 'popover'
           }],
           onChange: type => setState({
-            ...state,
             'data-plugin': type
           })
         }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
@@ -706,9 +694,12 @@ const Controls = _ref => {
         }
         render = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
           label: __('Placement', 'wecodeart'),
-          value: (_options$placement = options?.placement) !== null && _options$placement !== void 0 ? _options$placement : 'auto',
+          value: options?.placement,
           help: __('How to position the tooltip.', 'wecodeart'),
           options: [{
+            label: __('Default', 'wecodeart'),
+            value: ''
+          }, {
             label: __('Auto', 'wecodeart'),
             value: 'auto'
           }, {
@@ -752,9 +743,13 @@ const Controls = _ref => {
           initialOpen: false
         }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelRow, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
           label: __('Trigger', 'wecodeart'),
-          value: options?.trigger ? options.trigger.split(' ') : ['hover', 'focus'],
+          value: options?.trigger ? options.trigger.split(' ') : [''],
           multiple: true,
+          help: __('How tooltip is triggered: click, hover, focus, manual.', 'wecodeart'),
           options: [{
+            label: __('Default', 'wecodeart'),
+            value: ''
+          }, {
             label: __('Hover', 'wecodeart'),
             value: 'hover'
           }, {
