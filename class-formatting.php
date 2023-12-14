@@ -20,7 +20,6 @@ use WeCodeArt\Singleton;
 use WeCodeArt\Integration;
 use WeCodeArt\Config\Traits\Asset;
 use WeCodeArt\Conditional\Traits\No_Conditionals;
-use function WeCodeArt\Functions\get_prop;
 
 /**
  * The Formatting object.
@@ -46,7 +45,7 @@ final class Formatting implements Integration {
 		\add_filter( 'wecodeart/filter/gutenberg/settings',	[ $this, 'decoration_styles'	], 20, 2 );
 
 		// Decode url encoded options.
-		add_filter( 'render_block', 						[ $this, 'render_block' 		], 20, 2 );
+		\add_filter( 'render_block', 						[ $this, 'render_block' 		], 20, 1 );
 	}
 
 	/**
@@ -54,7 +53,7 @@ final class Formatting implements Integration {
 	 *
 	 * @return  string
 	 */
-	public function render_block( $content, $block ): string {
+	public function render_block( $content = '' ): string {
 		if ( strpos( $content, 'data-options="' ) === false ) {
 			return $content;
 		}
