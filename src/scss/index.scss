@@ -1,0 +1,123 @@
+.wecodeart-modal {
+    &--popper {
+        .components-modal {
+            &__content {
+                margin-bottom: 2rem;
+            }
+        }
+
+        .components-button-group {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            display: flex;
+            padding: 1rem 2rem;
+            background-color: white;
+            border-top: 1px solid #e0e0e0;
+
+            .components-button {
+                flex: 0 0 50%;
+                justify-content: center;
+                box-shadow: 0 0 1px 1px lightgray;
+            }
+        }
+    }
+}
+
+.wecodeart-tabs {
+    &--popper {
+        --wp--spacing: 2rem;
+        margin: 0 calc(-1 * var(--wp--spacing));
+
+        .components-tab-panel {
+            &__tabs {
+                border-bottom: 1px solid lightgray;
+                padding-left: var(--wp--spacing);
+                padding-right: var(--wp--spacing);
+
+                &-item {
+                    border: 1px solid lightgray;
+                    border-bottom: 0;
+                    height: auto;
+                    padding: 8px 20px;
+
+                    &.active-tab {
+                        border-color: var(--wp-admin-theme-color);
+                        background-color: var(--wp-admin-theme-color);
+                        color: white;
+                    }
+
+                    &:first-of-type {
+                        border-top-left-radius: 5px;
+                    }
+
+                    &:last-of-type {
+                        border-top-right-radius: 5px;
+                    }
+
+                    & + button {
+                        border-left: 0;
+                    }
+                }
+            }
+
+            &__tab {
+                &-content {
+                    padding: var(--wp--spacing);
+                    max-height: 455px;
+                    max-width: 350px;
+                    overflow-y: auto;
+                }
+            }
+        }
+
+        .components-base-control {
+            &:not(:last-child) {
+                margin-bottom: 1.25rem;
+            }
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+}
+
+.wecodeart-panel {
+    &--advanced {
+        margin-left: calc(-1 * var(--wp--spacing));
+        margin-right: calc(-1 * var(--wp--spacing));
+
+        .components-panel {
+            &__body {
+                border-top: 0;
+
+                &.is-opened {
+                    padding: var(--wp--spacing);
+
+                    .components-panel {
+                        &__body-title {
+                            margin: calc(-1 * var(--wp--spacing)) calc(-1 * var(--wp--spacing)) 1.5rem;
+                            border-bottom: 1px solid #e0e0e0;
+                        }
+                    }
+                }
+
+                &-toggle {
+                    padding-left: var(--wp--spacing);
+                    padding-right: var(--wp--spacing);
+                }
+            }
+
+            &__row {
+                flex-direction: column;
+                align-items: stretch;
+
+                .components-base-control__field {
+                    margin-bottom: 0;
+                }
+            }
+        }
+    }
+}
