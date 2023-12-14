@@ -56,7 +56,7 @@ const Controls = ({ state, setState }) => {
                                     { label: 'Tooltip', value: 'tooltip' },
                                     { label: 'Popover', value: 'popover' },
                                 ]}
-                                onChange={(type) => setState({ 'data-plugin': type })}
+                                onChange={(type) => setState({ ...state, 'data-plugin': type })}
                             />
                             <TextareaControl
                                 label={__('Title', 'wecodeart')}
