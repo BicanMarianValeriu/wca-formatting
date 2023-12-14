@@ -351,7 +351,48 @@ __webpack_require__.r(__webpack_exports__);
      * Setup Events
      */
     setupEventHandlers() {
-      return null;
+      const lazyPlugins = () => {
+        const {
+          plugin = 'tooltip'
+        } = this.el.dataset;
+        switch (plugin) {
+          case 'tooltip':
+            (async () => {
+              const {
+                default: Tooltip
+              } = await __webpack_require__.e(/*! import() | tooltip */ "tooltip").then(__webpack_require__.t.bind(__webpack_require__, /*! bootstrap/js/dist/tooltip */ "./node_modules/bootstrap/js/dist/tooltip.js", 23));
+              const plugin = new Tooltip(this.el, this.options);
+              const {
+                trigger = 'hover focus'
+              } = this.options;
+              if (/hover|focus/.test(trigger)) {
+                plugin.show();
+              }
+            })();
+            break;
+          case 'popover':
+            (async () => {
+              const {
+                default: Popover
+              } = await Promise.all(/*! import() | popover */[__webpack_require__.e("tooltip"), __webpack_require__.e("popover")]).then(__webpack_require__.t.bind(__webpack_require__, /*! bootstrap/js/dist/popover */ "./node_modules/bootstrap/js/dist/popover.js", 23));
+              const plugin = new Popover(this.el, this.options);
+              const {
+                trigger = ''
+              } = this.options;
+              if (/hover|focus/.test(trigger)) {
+                plugin.show();
+              }
+            })();
+            break;
+        }
+      };
+      this.lazyPlugins = lazyPlugins.bind(this);
+      this.el.addEventListener('mouseenter', this.lazyPlugins, {
+        once: true
+      });
+      this.el.addEventListener('touchstart', this.lazyPlugins, {
+        once: true
+      });
     }
 
     /**
@@ -359,7 +400,8 @@ __webpack_require__.r(__webpack_exports__);
      */
     removeEventHandlers() {
       if (Popper.getInstance(this.el)) {
-        return null;
+        this.el.removeEventListener('mouseenter', this.lazyPlugins);
+        this.el.removeEventListener('touchstart', this.lazyPlugins);
       }
     }
 
@@ -379,27 +421,7 @@ __webpack_require__.r(__webpack_exports__);
      * Build
      */
     build() {
-      const {
-        plugin = 'tooltip'
-      } = this.el.dataset;
-      switch (plugin) {
-        case 'tooltip':
-          (async () => {
-            const {
-              default: Tooltip
-            } = await __webpack_require__.e(/*! import() | tooltip */ "tooltip").then(__webpack_require__.t.bind(__webpack_require__, /*! bootstrap/js/dist/tooltip */ "./node_modules/bootstrap/js/dist/tooltip.js", 23));
-            return new Tooltip(this.el, this.options);
-          })();
-          break;
-        case 'popover':
-          (async () => {
-            const {
-              default: Popover
-            } = await Promise.all(/*! import() | popover */[__webpack_require__.e("tooltip"), __webpack_require__.e("popover")]).then(__webpack_require__.t.bind(__webpack_require__, /*! bootstrap/js/dist/popover */ "./node_modules/bootstrap/js/dist/popover.js", 23));
-            return new Popover(this.el, this.options);
-          })();
-          break;
-      }
+      return null;
     }
   }
 

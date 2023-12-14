@@ -3,6 +3,7 @@
   \***************************************************************************************************************************************************************************************************************************************************************************/
 .wecodeart-modal--popper .components-modal__content {
   margin-bottom: 2rem;
+  overflow: hidden;
 }
 .wecodeart-modal--popper .components-button-group {
   position: absolute;
@@ -51,7 +52,7 @@
 }
 .wecodeart-tabs--popper .components-tab-panel__tab-content {
   padding: var(--wp--spacing);
-  max-height: 455px;
+  max-height: 450px;
   max-width: 350px;
   overflow-y: auto;
 }
@@ -85,6 +86,9 @@
   align-items: stretch;
 }
 .wecodeart-panel--advanced .components-panel__row .components-base-control__field {
+  margin-bottom: 0;
+}
+.wecodeart-panel--advanced .components-base-control__help {
   margin-bottom: 0;
 }
 
