@@ -82,7 +82,10 @@ export default (function (wecodeart) {
 			}
 
 			this.lazyPlugins = lazyPlugins.bind(this);
-			['focus', 'mouseenter', 'touchstart'].forEach(ev => this.el.addEventListener(ev, this.lazyPlugins, { once: true }));
+			['focus', 'mouseenter', 'touchstart'].forEach(ev => this.el.addEventListener(ev, this.lazyPlugins, {
+				...{ once: true },
+				...(ev === 'touchstart' ? { passive: true } : {})
+			}));
 		}
 
 		/**
@@ -90,7 +93,7 @@ export default (function (wecodeart) {
 		 */
 		removeEventHandlers() {
 			if (Popper.getInstance(this.el)) {
-				['focus', 'mouseenter', 'touchstart'].forEach(ev => this.el.removeEventListener(ev, this.lazyPlugins, { once: true }));
+				['focus', 'mouseenter', 'touchstart'].forEach(ev => this.el.removeEventListener(ev, this.lazyPlugins));
 			}
 		}
 
