@@ -365,7 +365,7 @@ __webpack_require__.r(__webpack_exports__);
               const {
                 trigger = 'hover focus'
               } = this.options;
-              if (/hover|focus/.test(trigger)) {
+              if (trigger.includes('hover')) {
                 plugin.show();
               }
             })();
@@ -379,7 +379,7 @@ __webpack_require__.r(__webpack_exports__);
               const {
                 trigger = ''
               } = this.options;
-              if (/hover|focus/.test(trigger)) {
+              if (trigger.includes('hover')) {
                 plugin.show();
               }
             })();
@@ -387,12 +387,9 @@ __webpack_require__.r(__webpack_exports__);
         }
       };
       this.lazyPlugins = lazyPlugins.bind(this);
-      this.el.addEventListener('mouseenter', this.lazyPlugins, {
+      ['focus', 'mouseenter', 'touchstart'].forEach(ev => this.el.addEventListener(ev, this.lazyPlugins, {
         once: true
-      });
-      this.el.addEventListener('touchstart', this.lazyPlugins, {
-        once: true
-      });
+      }));
     }
 
     /**
@@ -400,8 +397,9 @@ __webpack_require__.r(__webpack_exports__);
      */
     removeEventHandlers() {
       if (Popper.getInstance(this.el)) {
-        this.el.removeEventListener('mouseenter', this.lazyPlugins);
-        this.el.removeEventListener('touchstart', this.lazyPlugins);
+        ['focus', 'mouseenter', 'touchstart'].forEach(ev => this.el.removeEventListener(ev, this.lazyPlugins, {
+          once: true
+        }));
       }
     }
 

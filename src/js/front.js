@@ -63,7 +63,7 @@ export default (function (wecodeart) {
 							const { default: Tooltip } = await import( /* webpackChunkName: "tooltip" */ "bootstrap/js/dist/tooltip");
 							const plugin = new Tooltip(this.el, this.options);
 							const { trigger = 'hover focus' } = this.options;
-							if (/hover|focus/.test(trigger)) {
+							if (trigger.includes('hover')) {
 								plugin.show();
 							}
 						})();
@@ -73,7 +73,7 @@ export default (function (wecodeart) {
 							const { default: Popover } = await import( /* webpackChunkName: "popover" */ "bootstrap/js/dist/popover");
 							const plugin = new Popover(this.el, this.options);
 							const { trigger = '' } = this.options;
-							if (/hover|focus/.test(trigger)) {
+							if (trigger.includes('hover')) {
 								plugin.show();
 							}
 						})();
@@ -82,8 +82,7 @@ export default (function (wecodeart) {
 			}
 
 			this.lazyPlugins = lazyPlugins.bind(this);
-			this.el.addEventListener('mouseenter', this.lazyPlugins, { once: true });
-			this.el.addEventListener('touchstart', this.lazyPlugins, { once: true });
+			['focus', 'mouseenter', 'touchstart'].forEach(ev => this.el.addEventListener(ev, this.lazyPlugins, { once: true }));
 		}
 
 		/**
@@ -91,8 +90,7 @@ export default (function (wecodeart) {
 		 */
 		removeEventHandlers() {
 			if (Popper.getInstance(this.el)) {
-				this.el.removeEventListener('mouseenter', this.lazyPlugins);
-				this.el.removeEventListener('touchstart', this.lazyPlugins);
+				['focus', 'mouseenter', 'touchstart'].forEach(ev => this.el.removeEventListener(ev, this.lazyPlugins, { once: true }));
 			}
 		}
 
