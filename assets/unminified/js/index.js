@@ -670,6 +670,7 @@ const Controls = _ref => {
             value: 'popover'
           }],
           onChange: type => setState({
+            ...state,
             'data-plugin': type
           })
         }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
