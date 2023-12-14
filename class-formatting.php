@@ -59,7 +59,7 @@ final class Formatting implements Integration {
 			return $content;
 		}
 
-		// Use a regular expression to find all instances of 'data-options' attribute
+		// Use a regular expression to find all instances of 'data-options'
 		$pattern = '/data-options="([^"]*)"/';
 
 		// Replace callback function
