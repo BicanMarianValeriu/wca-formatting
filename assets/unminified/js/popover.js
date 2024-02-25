@@ -1,4 +1,4 @@
-(self["webpackChunkwecodeart"] = self["webpackChunkwecodeart"] || []).push([["popover"],{
+(globalThis["webpackChunkwecodeart"] = globalThis["webpackChunkwecodeart"] || []).push([["popover"],{
 
 /***/ "./node_modules/bootstrap/js/dist/popover.js":
 /*!***************************************************!*\

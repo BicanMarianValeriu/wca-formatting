@@ -1,4 +1,4 @@
-/******/ (function() { // webpackBootstrap
+/******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({});
 /************************************************************************/
@@ -31,8 +31,8 @@
 /******/ 	
 /************************************************************************/
 /******/ 	/* webpack/runtime/create fake namespace object */
-/******/ 	!function() {
-/******/ 		var getProto = Object.getPrototypeOf ? function(obj) { return Object.getPrototypeOf(obj); } : function(obj) { return obj.__proto__; };
+/******/ 	(() => {
+/******/ 		var getProto = Object.getPrototypeOf ? (obj) => (Object.getPrototypeOf(obj)) : (obj) => (obj.__proto__);
 /******/ 		var leafPrototypes;
 /******/ 		// create a fake namespace object
 /******/ 		// mode & 1: value is a module id, require it
@@ -52,59 +52,59 @@
 /******/ 			var def = {};
 /******/ 			leafPrototypes = leafPrototypes || [null, getProto({}), getProto([]), getProto(getProto)];
 /******/ 			for(var current = mode & 2 && value; typeof current == 'object' && !~leafPrototypes.indexOf(current); current = getProto(current)) {
-/******/ 				Object.getOwnPropertyNames(current).forEach(function(key) { def[key] = function() { return value[key]; }; });
+/******/ 				Object.getOwnPropertyNames(current).forEach((key) => (def[key] = () => (value[key])));
 /******/ 			}
-/******/ 			def['default'] = function() { return value; };
+/******/ 			def['default'] = () => (value);
 /******/ 			__webpack_require__.d(ns, def);
 /******/ 			return ns;
 /******/ 		};
-/******/ 	}();
+/******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/define property getters */
-/******/ 	!function() {
+/******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
-/******/ 		__webpack_require__.d = function(exports, definition) {
+/******/ 		__webpack_require__.d = (exports, definition) => {
 /******/ 			for(var key in definition) {
 /******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
 /******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
 /******/ 				}
 /******/ 			}
 /******/ 		};
-/******/ 	}();
+/******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/ensure chunk */
-/******/ 	!function() {
+/******/ 	(() => {
 /******/ 		__webpack_require__.f = {};
 /******/ 		// This file contains only the entry chunk.
 /******/ 		// The chunk loading function for additional chunks
-/******/ 		__webpack_require__.e = function(chunkId) {
-/******/ 			return Promise.all(Object.keys(__webpack_require__.f).reduce(function(promises, key) {
+/******/ 		__webpack_require__.e = (chunkId) => {
+/******/ 			return Promise.all(Object.keys(__webpack_require__.f).reduce((promises, key) => {
 /******/ 				__webpack_require__.f[key](chunkId, promises);
 /******/ 				return promises;
 /******/ 			}, []));
 /******/ 		};
-/******/ 	}();
+/******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/get javascript chunk filename */
-/******/ 	!function() {
+/******/ 	(() => {
 /******/ 		// This function allow to reference async chunks
-/******/ 		__webpack_require__.u = function(chunkId) {
+/******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames based on template
 /******/ 			return "js/" + chunkId + ".js";
 /******/ 		};
-/******/ 	}();
+/******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/get mini-css chunk filename */
-/******/ 	!function() {
+/******/ 	(() => {
 /******/ 		// This function allow to reference async chunks
-/******/ 		__webpack_require__.miniCssF = function(chunkId) {
+/******/ 		__webpack_require__.miniCssF = (chunkId) => {
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};
-/******/ 	}();
+/******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
-/******/ 	!function() {
+/******/ 	(() => {
 /******/ 		__webpack_require__.g = (function() {
 /******/ 			if (typeof globalThis === 'object') return globalThis;
 /******/ 			try {
@@ -113,19 +113,19 @@
 /******/ 				if (typeof window === 'object') return window;
 /******/ 			}
 /******/ 		})();
-/******/ 	}();
+/******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	!function() {
-/******/ 		__webpack_require__.o = function(obj, prop) { return Object.prototype.hasOwnProperty.call(obj, prop); }
-/******/ 	}();
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/load script */
-/******/ 	!function() {
+/******/ 	(() => {
 /******/ 		var inProgress = {};
 /******/ 		var dataWebpackPrefix = "wecodeart:";
 /******/ 		// loadScript function to load a script via script tag
-/******/ 		__webpack_require__.l = function(url, done, key, chunkId) {
+/******/ 		__webpack_require__.l = (url, done, key, chunkId) => {
 /******/ 			if(inProgress[url]) { inProgress[url].push(done); return; }
 /******/ 			var script, needAttach;
 /******/ 			if(key !== undefined) {
@@ -149,14 +149,14 @@
 /******/ 				script.src = url;
 /******/ 			}
 /******/ 			inProgress[url] = [done];
-/******/ 			var onScriptComplete = function(prev, event) {
+/******/ 			var onScriptComplete = (prev, event) => {
 /******/ 				// avoid mem leaks in IE.
 /******/ 				script.onerror = script.onload = null;
 /******/ 				clearTimeout(timeout);
 /******/ 				var doneFns = inProgress[url];
 /******/ 				delete inProgress[url];
 /******/ 				script.parentNode && script.parentNode.removeChild(script);
-/******/ 				doneFns && doneFns.forEach(function(fn) { return fn(event); });
+/******/ 				doneFns && doneFns.forEach((fn) => (fn(event)));
 /******/ 				if(prev) return prev(event);
 /******/ 			}
 /******/ 			var timeout = setTimeout(onScriptComplete.bind(null, undefined, { type: 'timeout', target: script }), 120000);
@@ -164,21 +164,21 @@
 /******/ 			script.onload = onScriptComplete.bind(null, script.onload);
 /******/ 			needAttach && document.head.appendChild(script);
 /******/ 		};
-/******/ 	}();
+/******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
-/******/ 	!function() {
+/******/ 	(() => {
 /******/ 		// define __esModule on exports
-/******/ 		__webpack_require__.r = function(exports) {
+/******/ 		__webpack_require__.r = (exports) => {
 /******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
 /******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 /******/ 			}
 /******/ 			Object.defineProperty(exports, '__esModule', { value: true });
 /******/ 		};
-/******/ 	}();
+/******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/publicPath */
-/******/ 	!function() {
+/******/ 	(() => {
 /******/ 		var scriptUrl;
 /******/ 		if (__webpack_require__.g.importScripts) scriptUrl = __webpack_require__.g.location + "";
 /******/ 		var document = __webpack_require__.g.document;
@@ -198,10 +198,10 @@
 /******/ 		if (!scriptUrl) throw new Error("Automatic publicPath is not supported in this browser");
 /******/ 		scriptUrl = scriptUrl.replace(/#.*$/, "").replace(/\?.*$/, "").replace(/\/[^\/]+$/, "/");
 /******/ 		__webpack_require__.p = scriptUrl + "../";
-/******/ 	}();
+/******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/jsonp chunk loading */
-/******/ 	!function() {
+/******/ 	(() => {
 /******/ 		// no baseURI
 /******/ 		
 /******/ 		// object to store loaded and loading chunks
@@ -211,7 +211,7 @@
 /******/ 			"front": 0
 /******/ 		};
 /******/ 		
-/******/ 		__webpack_require__.f.j = function(chunkId, promises) {
+/******/ 		__webpack_require__.f.j = (chunkId, promises) => {
 /******/ 				// JSONP chunk loading for javascript
 /******/ 				var installedChunkData = __webpack_require__.o(installedChunks, chunkId) ? installedChunks[chunkId] : undefined;
 /******/ 				if(installedChunkData !== 0) { // 0 means "already installed".
@@ -222,14 +222,14 @@
 /******/ 					} else {
 /******/ 						if(true) { // all chunks have JS
 /******/ 							// setup Promise in chunk cache
-/******/ 							var promise = new Promise(function(resolve, reject) { installedChunkData = installedChunks[chunkId] = [resolve, reject]; });
+/******/ 							var promise = new Promise((resolve, reject) => (installedChunkData = installedChunks[chunkId] = [resolve, reject]));
 /******/ 							promises.push(installedChunkData[2] = promise);
 /******/ 		
 /******/ 							// start chunk loading
 /******/ 							var url = __webpack_require__.p + __webpack_require__.u(chunkId);
 /******/ 							// create error before stack unwound to get useful stacktrace later
 /******/ 							var error = new Error();
-/******/ 							var loadingEnded = function(event) {
+/******/ 							var loadingEnded = (event) => {
 /******/ 								if(__webpack_require__.o(installedChunks, chunkId)) {
 /******/ 									installedChunkData = installedChunks[chunkId];
 /******/ 									if(installedChunkData !== 0) installedChunks[chunkId] = undefined;
@@ -261,14 +261,12 @@
 /******/ 		// no on chunks loaded
 /******/ 		
 /******/ 		// install a JSONP callback for chunk loading
-/******/ 		var webpackJsonpCallback = function(parentChunkLoadingFunction, data) {
-/******/ 			var chunkIds = data[0];
-/******/ 			var moreModules = data[1];
-/******/ 			var runtime = data[2];
+/******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
+/******/ 			var [chunkIds, moreModules, runtime] = data;
 /******/ 			// add "moreModules" to the modules object,
 /******/ 			// then flag all "chunkIds" as loaded and fire callback
 /******/ 			var moduleId, chunkId, i = 0;
-/******/ 			if(chunkIds.some(function(id) { return installedChunks[id] !== 0; })) {
+/******/ 			if(chunkIds.some((id) => (installedChunks[id] !== 0))) {
 /******/ 				for(moduleId in moreModules) {
 /******/ 					if(__webpack_require__.o(moreModules, moduleId)) {
 /******/ 						__webpack_require__.m[moduleId] = moreModules[moduleId];
@@ -287,10 +285,10 @@
 /******/ 		
 /******/ 		}
 /******/ 		
-/******/ 		var chunkLoadingGlobal = self["webpackChunkwecodeart"] = self["webpackChunkwecodeart"] || [];
+/******/ 		var chunkLoadingGlobal = globalThis["webpackChunkwecodeart"] = globalThis["webpackChunkwecodeart"] || [];
 /******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
 /******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
-/******/ 	}();
+/******/ 	})();
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
@@ -298,6 +296,9 @@ var __webpack_exports__ = {};
   !*** ./inc/support/modules/formatting/src/js/front.js ***!
   \********************************************************/
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /**
  * Popper
  *
@@ -305,46 +306,23 @@ __webpack_require__.r(__webpack_exports__);
  * @version 0.1
  */
 
-/* harmony default export */ __webpack_exports__["default"] = ((function (wecodeart) {
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((function (wecodeart) {
   const {
     Component
   } = wecodeart;
-  const getDefaults = {
-    title: ''
-  };
   class Popper extends Component {
-    /**
-     * Construct Animate instance
-     * @constructor
-     * @param {Element} el
-     * @param {Object} options
-     */
-    constructor(el, options) {
-      super(Popper, el, options);
-      this.el = el;
-      this.el.Popper = this;
-      /**
-       * Options for the animation
-       * @member Popper#options
-       */
-      this.options = Object.assign({}, Popper.defaults, options);
-      Popper.elements.push(this);
+    constructor(el, config) {
+      super(Popper, el, config);
+      this._element = el;
+      this._config = this._config || Object.assign({}, Popper.defaults, config);
       this.setupEventHandlers();
-      this.build();
-    }
-    static get defaults() {
-      return getDefaults;
-    }
-    static init(els, options) {
-      return super.init(this, els, options);
     }
 
     /**
-     * Get Instance
+     * Init
      */
-    static getInstance(el) {
-      const domElem = el.jquery ? el[0] : el;
-      return domElem.Popper;
+    static init(els, config) {
+      return super.init(this, els, config);
     }
 
     /**
@@ -354,17 +332,17 @@ __webpack_require__.r(__webpack_exports__);
       const lazyPlugins = () => {
         const {
           plugin = 'tooltip'
-        } = this.el.dataset;
+        } = this._element.dataset;
         switch (plugin) {
           case 'tooltip':
             (async () => {
               const {
                 default: Tooltip
               } = await __webpack_require__.e(/*! import() | tooltip */ "tooltip").then(__webpack_require__.t.bind(__webpack_require__, /*! bootstrap/js/dist/tooltip */ "./node_modules/bootstrap/js/dist/tooltip.js", 23));
-              const plugin = new Tooltip(this.el, this.options);
+              const plugin = new Tooltip(this._element, this._config);
               const {
                 trigger = 'hover focus'
-              } = this.options;
+              } = this._config;
               if (trigger.includes('hover')) {
                 plugin.show();
               }
@@ -375,10 +353,10 @@ __webpack_require__.r(__webpack_exports__);
               const {
                 default: Popover
               } = await Promise.all(/*! import() | popover */[__webpack_require__.e("tooltip"), __webpack_require__.e("popover")]).then(__webpack_require__.t.bind(__webpack_require__, /*! bootstrap/js/dist/popover */ "./node_modules/bootstrap/js/dist/popover.js", 23));
-              const plugin = new Popover(this.el, this.options);
+              const plugin = new Popover(this._element, this._config);
               const {
                 trigger = ''
-              } = this.options;
+              } = this._config;
               if (trigger.includes('hover')) {
                 plugin.show();
               }
@@ -387,7 +365,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       };
       this.lazyPlugins = lazyPlugins.bind(this);
-      ['focus', 'mouseenter', 'touchstart'].forEach(ev => this.el.addEventListener(ev, this.lazyPlugins, {
+      ['focus', 'mouseenter', 'touchstart'].forEach(ev => this._element.addEventListener(ev, this.lazyPlugins, {
         ...{
           once: true
         },
@@ -396,41 +374,12 @@ __webpack_require__.r(__webpack_exports__);
         } : {})
       }));
     }
-
-    /**
-     * Remove Event Handlers
-     */
-    removeEventHandlers() {
-      if (Popper.getInstance(this.el)) {
-        ['focus', 'mouseenter', 'touchstart'].forEach(ev => this.el.removeEventListener(ev, this.lazyPlugins));
-      }
-    }
-
-    /**
-     * Teardown component
-     */
-    destroy() {
-      if (Popper.getInstance(this.el)) {
-        this.removeEventHandlers();
-        const index = Popper.elements.indexOf(this);
-        Popper.elements.splice(index, 1);
-        this.el.Popper = undefined;
-      }
-    }
-
-    /**
-     * Build
-     */
-    build() {
-      return null;
-    }
   }
 
   /**
    * @static
    * @memberof Popper
    */
-  Popper.elements = [];
   wecodeart.plugins.Popper = Popper;
   Popper.init(document.querySelectorAll('.has-popper[data-plugin]'));
 }).apply(undefined, [window.wecodeart]));

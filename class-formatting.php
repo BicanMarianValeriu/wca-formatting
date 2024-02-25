@@ -9,7 +9,7 @@
  * @subpackage 	Support\Modules\Formatting
  * @copyright   Copyright (c) 2023, WeCodeArt Framework
  * @since 		6.3.0
- * @version		6.3.0
+ * @version		6.3.5
  */
 
 namespace WeCodeArt\Support\Modules;
@@ -20,6 +20,7 @@ use WeCodeArt\Singleton;
 use WeCodeArt\Integration;
 use WeCodeArt\Config\Traits\Asset;
 use WeCodeArt\Conditional\Traits\No_Conditionals;
+use function WeCodeArt\Functions\toJSON;
 
 /**
  * The Formatting object.
@@ -67,8 +68,7 @@ final class Formatting implements Integration {
 			$json 		= json_decode( $decoded, true );
 			
 			if ( json_last_error() === JSON_ERROR_NONE ) {
-				$encoded = json_encode( $json, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
-				$encoded = str_replace( "'", "`", $encoded );
+				$encoded = toJSON( $json );
 				
 				return 'data-options="' . esc_attr( $encoded ) . '"';
 			}
@@ -94,7 +94,7 @@ final class Formatting implements Integration {
 				}
 				
 				if( str_contains( $content, 'has-popper' ) || str_contains( $template, 'has-popper' ) ) {
-					wecodeart( 'styles' )->Components->load( [ 'tooltip', 'popover' ] );
+					wecodeart( 'styles' )->Components->load( [ 'modules/formatting', 'tooltip', 'popover' ] );
 					
 					return true;
 				}
