@@ -314,7 +314,9 @@ __webpack_require__.r(__webpack_exports__);
     constructor(el, config) {
       super(Popper, el, config);
       this.el.Popper = this;
-      this._config = this._config || Object.assign({}, Popper.defaults, config);
+      this._element = this._element || el; // temp
+      this._config = this._config || Object.assign({}, Popper.defaults, config); // temp
+
       this.setupEventHandlers();
     }
 
