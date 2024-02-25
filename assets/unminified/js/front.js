@@ -313,9 +313,17 @@ __webpack_require__.r(__webpack_exports__);
   class Popper extends Component {
     constructor(el, config) {
       super(Popper, el, config);
-      this._element = el;
+      this.el.Popper = this;
       this._config = this._config || Object.assign({}, Popper.defaults, config);
       this.setupEventHandlers();
+    }
+
+    /**
+     * Get Instance
+     */
+    static getInstance(el) {
+      const domElem = el.jquery ? el[0] : el;
+      return domElem.Popper;
     }
 
     /**
