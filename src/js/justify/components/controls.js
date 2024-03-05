@@ -43,7 +43,7 @@ const Control = () => {
 		return (
 			<RichTextToolbarButton
 				icon={<Icon icon={alignJustify} />}
-				title={__('Justify', 'wecodeart')}
+				title={__('Justify')}
 				onClick={onToggle}
 				isActive={isBlockJustified}
 			/>

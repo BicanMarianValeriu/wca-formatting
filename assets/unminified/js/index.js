@@ -139,14 +139,14 @@ const Edit = ({
     icon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Icon, {
       icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_1__["default"]
     }),
-    title: __('Abbreviation', 'wecodeart'),
+    title: __('Abbreviation'),
     onClick: toggle,
     isActive: isActive
   }), isOpen && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Modal, {
-    title: __('Insert Abbreviation', 'wecodeart'),
+    title: __('Abbreviation'),
     onRequestClose: toggle
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
-    label: __('Title', 'wecodeart'),
+    label: __('Title'),
     value: title,
     onChange: title => setState({
       ...state,
@@ -156,7 +156,7 @@ const Edit = ({
     isPrimary: true,
     isLarge: true,
     onClick: onClick
-  }, title ? __('Apply', 'wecodeart') : __('Remove', 'wecodeart'))));
+  }, title ? __('Apply') : __('Remove'))));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Edit);
 
@@ -280,7 +280,7 @@ const decoration = {
     });
     const toggle = () => setIsOpen(!isOpen);
     const selectOptions = [...[{
-      label: __('Default', 'wecodeart'),
+      label: __('Default'),
       value: ''
     }], ...decorationStyles.map(i => ({
       ...i,
@@ -289,6 +289,18 @@ const decoration = {
     useEffect(() => setState({
       ...attributes
     }), [activeFormat]);
+    const PreviewDecoration = () => {
+      let classes = ['has-decoration'];
+      classes = [...classes, state?.class];
+      return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+        style: {
+          fontSize: '1.15rem',
+          fontWeight: '400'
+        }
+      }, "Lorem ipsum ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+        class: classes.join(' ')
+      }, "dolor"), " sit ament.");
+    };
     return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichTextToolbarButton, {
       icon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Icon, {
         icon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(SVG, {
@@ -305,17 +317,17 @@ const decoration = {
       onClick: toggle,
       isActive: isActive
     }), isOpen && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Modal, {
-      title: __('Settings', 'wecodeart'),
+      title: __('Settings'),
       onRequestClose: toggle
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
-      label: __('Style', 'wecodeart'),
+      label: __('Style'),
       value: state?.class,
       options: selectOptions,
       onChange: _class => setState({
         ...state,
         class: _class
       })
-    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(ButtonGroup, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
+    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(PreviewDecoration, null), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(ButtonGroup, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
       isPrimary: true,
       isLarge: true,
       onClick: () => {
@@ -325,14 +337,14 @@ const decoration = {
         }));
         toggle();
       }
-    }, __('Apply', 'wecodeart')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
+    }, __('Apply')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
       isDestructive: true,
       isLarge: true,
       onClick: () => {
         onChange(removeFormat(value, name));
         toggle();
       }
-    }, __('Remove', 'wecodeart')))));
+    }, __('Remove')))));
   }
 };
 
@@ -416,7 +428,7 @@ const Control = () => {
       icon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Icon, {
         icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_1__["default"]
       }),
-      title: __('Justify', 'wecodeart'),
+      title: __('Justify'),
       onClick: onToggle,
       isActive: isBlockJustified
     });
@@ -627,7 +639,6 @@ const {
   components: {
     SelectControl,
     ToggleControl,
-    __experimentalNumberControl: NumberControl,
     TextControl,
     TextareaControl,
     TabPanel,
@@ -640,7 +651,7 @@ const Controls = ({
   state,
   setState
 }) => {
-  const options = JSON.parse(decodeURIComponent(state?.['data-options'] || '{}'));
+  const options = JSON.parse(decodeURIComponent(state?.['data-wp-context'] || '{}'));
   const setOptions = value => {
     let newOptions = {
       ...options,
@@ -649,7 +660,7 @@ const Controls = ({
     newOptions = Object.fromEntries(Object.entries(newOptions).filter(([_, v]) => v !== null && v !== ''));
     setState({
       ...state,
-      'data-options': encodeURIComponent(JSON.stringify(newOptions))
+      'data-wp-context': encodeURIComponent(JSON.stringify(newOptions))
     });
   };
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TabPanel, {
@@ -657,21 +668,21 @@ const Controls = ({
     className: "wecodeart-tabs wecodeart-tabs--popper",
     tabs: [{
       name: 'content',
-      title: __('Content', 'wecodeart')
+      title: __('Content')
     }, {
       name: 'options',
-      title: __('Options', 'wecodeart')
+      title: __('Options')
     }]
   }, ({
     name
   }) => {
-    var _state$dataPlugin, _options$animation, _options$html, _options$sanitize;
+    var _options$plugin, _options$animation, _options$html, _options$sanitize;
     let render;
     switch (name) {
       case 'content':
         render = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
-          label: __('Type', 'wecodeart'),
-          value: (_state$dataPlugin = state?.['data-plugin']) !== null && _state$dataPlugin !== void 0 ? _state$dataPlugin : 'tooltip',
+          label: __('Type'),
+          value: (_options$plugin = options?.plugin) !== null && _options$plugin !== void 0 ? _options$plugin : 'tooltip',
           options: [{
             label: 'Tooltip',
             value: 'tooltip'
@@ -679,18 +690,21 @@ const Controls = ({
             label: 'Popover',
             value: 'popover'
           }],
-          onChange: type => setState({
-            ...state,
-            'data-plugin': type
-          })
+          onChange: plugin => {
+            const content = options?.plugin === 'popover' ? options?.content : '';
+            setOptions({
+              plugin,
+              content
+            });
+          }
         }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
-          label: __('Title', 'wecodeart'),
+          label: __('Title'),
           value: options?.title,
           onChange: title => setOptions({
-            title
+            title: title !== null && title !== void 0 ? title : ''
           })
-        }), state?.['data-plugin'] === 'popover' && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
-          label: __('Content', 'wecodeart'),
+        }), options?.plugin === 'popover' && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
+          label: __('Content'),
           value: options?.content,
           onChange: content => setOptions({
             content
@@ -699,53 +713,51 @@ const Controls = ({
         break;
       case 'options':
         function templatePlaceholder() {
-          var _state$dataPlugin2;
-          const type = (_state$dataPlugin2 = state?.['data-plugin']) !== null && _state$dataPlugin2 !== void 0 ? _state$dataPlugin2 : 'tooltip';
-          return `<div class="${type}" role="tooltip"><div class="${type}-arrow"></div><div class="${type}-inner"></div></div>`;
+          var _options$plugin2;
+          const type = (_options$plugin2 = options?.plugin) !== null && _options$plugin2 !== void 0 ? _options$plugin2 : 'tooltip';
+          return `<div class="wp-${type}" role="tooltip"><div class="wp-${type}__arrow"></div><div class="wp-${type}__inner"></div></div>`;
         }
         render = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
-          label: __('Placement', 'wecodeart'),
+          label: __('Position'),
           value: options?.placement,
           help: __('How to position the tooltip.', 'wecodeart'),
           options: [{
-            label: __('Default', 'wecodeart'),
+            label: __('Default'),
             value: ''
           }, {
-            label: __('Auto', 'wecodeart'),
+            label: __('Auto'),
             value: 'auto'
           }, {
-            label: __('Top', 'wecodeart'),
+            label: __('Top'),
             value: 'top'
           }, {
-            label: __('Left', 'wecodeart'),
+            label: __('Left'),
             value: 'left'
           }, {
-            label: __('Right', 'wecodeart'),
+            label: __('Right'),
             value: 'right'
           }, {
-            label: __('Bottom', 'wecodeart'),
+            label: __('Bottom'),
             value: 'bottom'
           }],
           onChange: placement => setOptions({
             placement
           })
-        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(NumberControl, {
-          label: __('Delay', 'wecodeart'),
+        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+          label: __('Delay'),
           value: options?.delay,
-          placeholder: "0",
-          min: 0,
-          step: 10,
-          help: __('Delay showing and hiding the popover (ms) — doesn`t apply to manual trigger type.', 'wecodeart'),
+          placeholder: "0, 0",
+          help: __('Delay showing and hiding the popover (ms) — doesn`t apply to manual trigger type. Comma separated values like: 500, 1000 for different show/hide delays.', 'wecodeart'),
           onChange: delay => setOptions({
-            delay: delay ? parseFloat(delay) : ''
+            delay: delay ? delay : ''
           })
         }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
-          label: __('Offset', 'wecodeart'),
+          label: __('Offset'),
           value: options?.offset,
           placeholder: "0, 0",
-          help: __('Offset of the tooltip relative to its target — comma separated values like: 10,20.', 'wecodeart'),
+          help: __('Offset of the tooltip relative to its target — comma separated values like: 10, 20, 10 for different axis.', 'wecodeart'),
           onChange: offset => setOptions({
-            offset
+            offset: offset ? offset : ''
           })
         }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, {
           className: "wecodeart-panel wecodeart-panel--advanced"
@@ -758,26 +770,26 @@ const Controls = ({
           multiple: true,
           help: __('How tooltip is triggered: click, hover, focus, manual.', 'wecodeart'),
           options: [{
-            label: __('Default', 'wecodeart'),
+            label: __('Default'),
             value: ''
           }, {
-            label: __('Hover', 'wecodeart'),
+            label: __('Hover'),
             value: 'hover'
           }, {
-            label: __('Focus', 'wecodeart'),
+            label: __('Focus'),
             value: 'focus'
           }, {
-            label: __('Click', 'wecodeart'),
+            label: __('Click'),
             value: 'click'
           }, {
-            label: __('Manual', 'wecodeart'),
+            label: __('Manual'),
             value: 'manual'
           }],
           onChange: trigger => setOptions({
             trigger: trigger.join(' ')
           })
         }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
-          label: __('Selector', 'wecodeart'),
+          label: __('Selector'),
           value: options?.selector,
           placeholder: "false",
           help: __('If a selector is provided, tooltip objects will be delegated to the specified targets.', 'wecodeart'),
@@ -785,7 +797,7 @@ const Controls = ({
             selector
           })
         }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
-          label: __('Container', 'wecodeart'),
+          label: __('Container'),
           value: options?.container,
           placeholder: "false",
           help: __('Appends the tooltip to a specific element.', 'wecodeart'),
@@ -793,35 +805,35 @@ const Controls = ({
             container
           })
         }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
-          label: __('Custom class', 'wecodeart'),
-          value: options?.customClass,
+          label: __('Custom class'),
+          value: options?.className,
           help: __('Add classes to the tooltip when it is shown.', 'wecodeart'),
-          onChange: customClass => setOptions({
-            customClass
+          onChange: className => setOptions({
+            className
           })
         }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
-          label: __('Animation', 'wecodeart'),
+          label: __('Animation'),
           checked: (_options$animation = options?.animation) !== null && _options$animation !== void 0 ? _options$animation : true,
           help: __('Apply a CSS fade transition to the tooltip.', 'wecodeart'),
           onChange: animation => setOptions({
             animation
           })
         }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
-          label: __('HTML', 'wecodeart'),
+          label: __('HTML'),
           checked: (_options$html = options?.html) !== null && _options$html !== void 0 ? _options$html : false,
           help: __('Allow HTML in the tooltip.', 'wecodeart'),
           onChange: html => setOptions({
             html
           })
         }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
-          label: __('Sanitize', 'wecodeart'),
+          label: __('Sanitize'),
           checked: (_options$sanitize = options?.sanitize) !== null && _options$sanitize !== void 0 ? _options$sanitize : true,
           help: __(`Enable or disable the sanitization. If activated 'template', 'content' and 'title' options will be sanitized.`, 'wecodeart'),
           onChange: sanitize => setOptions({
             sanitize
           })
         }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
-          label: __('Template', 'wecodeart'),
+          label: __('Template'),
           help: __('Base HTML to use when creating the tooltip. ', 'wecodeart'),
           value: options?.template,
           placeholder: templatePlaceholder(),
@@ -892,9 +904,7 @@ const popper = {
   tagName: 'span',
   className: 'has-popper',
   attributes: {
-    'data-plugin': 'data-plugin',
-    'data-options': 'data-options',
-    'tabindex': 'tabindex'
+    'data-wp-context': 'data-wp-context'
   },
   edit({
     isActive,
@@ -903,21 +913,26 @@ const popper = {
   }) {
     const activeFormat = getActiveFormat(value, name);
     const {
-      attributes = {
-        'data-plugin': 'tooltip',
-        'data-options': JSON.stringify({
-          title: ''
-        }),
-        'tabindex': "0"
+      attributes: oldAttributes = {
+        'data-options': ''
       }
     } = activeFormat || {};
+    const {
+      attributes = {
+        'data-wp-context': ''
+      }
+    } = activeFormat || {};
+    const mergedAttributes = {
+      ...attributes,
+      'data-wp-context': attributes['data-wp-context'] ? attributes['data-wp-context'] : oldAttributes['data-options']
+    };
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => setIsOpen(!isOpen);
     const [state, setState] = useState({
-      ...attributes
+      ...mergedAttributes
     });
     useEffect(() => setState({
-      ...attributes
+      ...mergedAttributes
     }), [activeFormat]);
     return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichTextToolbarButton, {
       icon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Icon, {
@@ -935,7 +950,7 @@ const popper = {
       isActive: isActive
     }), isOpen && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Modal, {
       className: "wecodeart-modal wecodeart-modal--popper",
-      title: __('Settings', 'wecodeart'),
+      title: __('Settings'),
       onRequestClose: toggle
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Controls__WEBPACK_IMPORTED_MODULE_1__["default"], {
       state,
@@ -950,14 +965,14 @@ const popper = {
         }));
         toggle();
       }
-    }, __('Apply', 'wecodeart')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
+    }, __('Apply')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
       isDestructive: true,
       isLarge: true,
       onClick: () => {
         onChange(removeFormat(value, name));
         toggle();
       }
-    }, __('Remove', 'wecodeart')))));
+    }, __('Remove')))));
   }
 };
 
@@ -1006,7 +1021,7 @@ const {
 const name = 'wca/underline';
 const underline = {
   name,
-  title: __('Underline', 'wecodeart'),
+  title: __('Underline'),
   tagName: 'span',
   className: 'has-underline',
   attributes: {
@@ -1037,7 +1052,7 @@ const underline = {
           d: "M5.313 3.136h-1.23V9.54c0 2.105 1.47 3.623 3.917 3.623s3.917-1.518 3.917-3.623V3.136h-1.23v6.323c0 1.49-.978 2.57-2.687 2.57-1.709 0-2.687-1.08-2.687-2.57V3.136zM12.5 15h-9v-1h9v1z"
         }))
       }),
-      title: __('Underline', 'wecodeart'),
+      title: __('Underline'),
       onClick: onToggle,
       isActive: isActive,
       shortcutType: "primary",

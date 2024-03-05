@@ -7,9 +7,9 @@
  *
  * @package		WeCodeArt Framework
  * @subpackage  Support\Modules\Formatting\Styles
- * @copyright   Copyright (c) 2023, WeCodeArt Framework
+ * @copyright   Copyright (c) 2024, WeCodeArt Framework
  * @since		6.3.0
- * @version		6.3.0
+ * @version		6.3.7
  */
 
 namespace WeCodeArt\Support\Modules\Formatting;
@@ -93,7 +93,7 @@ class Styles extends Base {
         $SVG_Oval_2 = encode_svg_data( $SVG_Oval_2 );
         $SVG_Oval_3 = encode_svg_data( $SVG_Oval_3 );
 
-        $inline = "
+        return <<<CSS
             .has-popper {
                 text-decoration: 1px underline dotted;
                 cursor: help;
@@ -101,7 +101,8 @@ class Styles extends Base {
             .has-popper:focus {
                 outline: 1px dotted;
             }
-            .has-popper[data-plugin=popover] {
+            .has-popper[data-plugin=popover],
+            .has-popper[data-wp-context*=popover] {
                 cursor: pointer;
             }
             .has-decoration {
@@ -111,7 +112,7 @@ class Styles extends Base {
             .has-decoration * {
                 text-decoration: none;
             }
-            .has-decoration::after {
+            .has-decoration[class*=is-style-]::after {
                 content: '';
                 position: absolute;
                 margin: 0;
@@ -123,6 +124,9 @@ class Styles extends Base {
                 background: var(--wp--preset--color--primary, currentColor);
                 z-index: -1;
                 pointer-events: none;
+            }
+            .has-decoration.is-style-underline::after {
+                content: none;
             }
             .has-decoration.is-style-brush::after {
                 -webkit-mask: url('$SVG_Brush1') center 100% no-repeat;
@@ -184,12 +188,10 @@ class Styles extends Base {
                 height: 1.5em;
                 left: calc(-1 * var(--wp--offset));
                 right: calc(-1 * var(--wp--offset));
-                bottom: 0;
+                bottom: .025em;
                 -webkit-mask: url('$SVG_Marker') center 100% no-repeat;
                 mask: url('$SVG_Marker') 100% center no-repeat;
             }
-        ";
-
-        return $inline;
+        CSS;
 	}
 }

@@ -3,7 +3,7 @@
  */
 const {
 	i18n: {
-		__
+		__,
 	},
 	data: {
 		select
@@ -55,10 +55,20 @@ export const decoration = {
 		const toggle = () => setIsOpen(!isOpen);
 
 		const selectOptions = [...[
-			{ label: __('Default', 'wecodeart'), value: '' }
+			{ label: __('Default'), value: '' }
 		], ...decorationStyles.map(i => ({ ...i, value: `is-style-${i.value}` }))];
 
 		useEffect(() => setState({ ...attributes }), [activeFormat]);
+
+		const PreviewDecoration = () => {
+			let classes = ['has-decoration'];
+			classes = [...classes, state?.class];
+
+			return (<p style={{
+				fontSize: '1.15rem',
+				fontWeight: '400',
+			}}>Lorem ipsum <span class={classes.join(' ')}>dolor</span> sit ament.</p>);
+		};
 
 		return (
 			<>
@@ -71,25 +81,26 @@ export const decoration = {
 					isActive={isActive}
 				/>
 				{isOpen && (
-					<Modal title={__('Settings', 'wecodeart')} onRequestClose={toggle}>
+					<Modal title={__('Settings')} onRequestClose={toggle}>
 						<SelectControl
-							label={__('Style', 'wecodeart')}
+							label={__('Style')}
 							value={state?.class}
 							options={selectOptions}
 							onChange={(_class) => setState({ ...state, class: _class })}
 						/>
+						<PreviewDecoration />
 						<ButtonGroup>
 							<Button isPrimary isLarge onClick={() => {
 								onChange(applyFormat(value, { type: name, attributes: state }));
 								toggle();
 							}}>
-								{__('Apply', 'wecodeart')}
+								{__('Apply')}
 							</Button>
 							<Button isDestructive isLarge onClick={() => {
 								onChange(removeFormat(value, name));
 								toggle();
 							}}>
-								{__('Remove', 'wecodeart')}
+								{__('Remove')}
 							</Button>
 						</ButtonGroup>
 					</Modal>

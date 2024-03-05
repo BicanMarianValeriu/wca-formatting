@@ -7,9 +7,9 @@
  *
  * @package 	WeCodeArt Framework
  * @subpackage 	Support\Modules\Formatting
- * @copyright   Copyright (c) 2023, WeCodeArt Framework
+ * @copyright   Copyright (c) 2024, WeCodeArt Framework
  * @since 		6.3.0
- * @version		6.3.5
+ * @version		6.3.7
  */
 
 namespace WeCodeArt\Support\Modules;
@@ -20,6 +20,7 @@ use WeCodeArt\Singleton;
 use WeCodeArt\Integration;
 use WeCodeArt\Config\Traits\Asset;
 use WeCodeArt\Conditional\Traits\No_Conditionals;
+use function WeCodeArt\Functions\get_prop;
 use function WeCodeArt\Functions\toJSON;
 
 /**
@@ -36,7 +37,9 @@ final class Formatting implements Integration {
 	 */
 	public function register_hooks() {
 		// Register styles component.
-		wecodeart( 'styles' )->Components->register( 'modules/formatting', Formatting\Styles::class );
+		wecodeart( 'styles' )->Components->register( 'formatting', 	Formatting\Styles::class );
+		wecodeart( 'styles' )->Components->register( 'tooltip', 	Formatting\Styles\Tooltip::class );
+		wecodeart( 'styles' )->Components->register( 'popover', 	Formatting\Styles\Popover::class );
 
 		// Enqueue assets hooks.
 		\add_action( 'wp_enqueue_scripts', 					[ $this, 'frontend_assets'		], 20, 1 );
@@ -55,27 +58,90 @@ final class Formatting implements Integration {
 	 * @return  string
 	 */
 	public function render_block( $content = '' ): string {
-		if ( strpos( $content, 'data-options="' ) === false ) {
-			return $content;
+		if( str_contains( $content, 'has-decoration' ) ) {
+			\wecodeart( 'styles' )->Components->load( [ 'formatting' ] );
 		}
 
-		// Use a regular expression to find all instances of 'data-options'
-		$pattern = '/data-options="([^"]*)"/';
+		if ( strpos( $content, 'has-popper' ) === false ) {
+			return $content;
+		}
+		
+		\wecodeart( 'styles' )->Components->load( [ 'formatting', 'tooltip', 'popover' ] );
 
-		// Replace callback function
+		if( function_exists( 'wp_enqueue_script_module' ) ) {
+			\wp_enqueue_script_module( '@wecodeart/tooltip' );
+		}
+
+		// Use a regular expression to find all instances of 'data-wp-context'
+		$pattern = '/data-wp-context="([^"]*)"[^>]*class="[^"]*has-popper[^"]*"/';
+		// ...or look into deprecated 'data-options'.
+		if ( strpos( $content, 'data-wp-context="' ) === false ) {
+			$pattern = '/data-options="([^"]*)"[^>]*class="[^"]*has-popper[^"]*/';
+		}
+
+		// Replace callback function.
 		$callback = function( $matches ) {
 			$decoded 	= urldecode( $matches[1] );
 			$json 		= json_decode( $decoded, true );
 			
 			if ( json_last_error() === JSON_ERROR_NONE ) {
+				$_plugin = get_prop( $json, [ '_plugin' ], 'tooltip' );
+				unset( $json['plugin'] );
 				$encoded = toJSON( $json );
+
+				if( $_plugin === 'popover' && function_exists( 'wp_enqueue_script_module' ) ) {
+					\wp_enqueue_script_module( '@wecodeart/popover' );
+				}
+
+				$triggers = explode( ' ', get_prop( $json, [ 'trigger' ], 'hover focus' ) );
 				
-				return 'data-options="' . esc_attr( $encoded ) . '"';
+				$replace_with = [ 'data-wp-context="' . esc_attr( $encoded ) . '"', 'data-wp-interactive="wecodeart/' . esc_attr( $_plugin ) . '"' ];
+				$replace_with[] = 'data-wp-init="callbacks.validateConfig"';
+
+				if( in_array( 'click', $triggers, true ) ) {
+					$replace_with[] = 'data-wp-on--click="actions.toggle"';
+				} elseif( ! in_array( 'manual', $triggers, true ) ) {
+					if( in_array( 'hover', $triggers, true ) ) {
+						$replace_with[] = 'data-wp-on--mouseenter="actions.enter"';
+						$replace_with[] = 'data-wp-on--mouseleave="actions.leave"';
+					}
+
+					if( in_array( 'focus', $triggers, true ) ) {
+						$replace_with[] = 'data-wp-on--focusin="actions.enter"';
+						$replace_with[] = 'data-wp-on--focusout="actions.leave"';
+					}
+				}
+
+				$replace_with[] = 'class="has-popper"';
+				$replace_with[] = 'tabindex="0"';
+
+				return join( ' ', $replace_with );
 			}
 
 			return $matches[0];
 		};
 
+		// Config defaults.
+		wp_interactivity_config( 'wecodeart/tooltip', [
+			'isEnabled'	=> true,
+			'boundary' 	=> 'clippingParents',
+			'placement'	=> 'top',
+			'fallbackPlacements' => ['top', 'right', 'bottom', 'left'],
+			'offset' 	=> [6],
+			'delay' 	=> 0,
+			'animation' => true,
+			'container' => false,
+			'html' 		=> false,
+			'sanitize' 	=> true,
+			'sanitizeFn' => null,
+			'selector' 	=> false,
+			'template' 	=> '<div class="wp-tooltip" role="tooltip"><div class="wp-tooltip__arrow"></div><div class="wp-tooltip__inner"></div></div>',
+			'className' => '',
+			'title' 	=> '',
+			'trigger' 	=> 'hover focus'
+		] );
+
+		// Do the initial replacement.
 		return preg_replace_callback( $pattern, $callback, $content );
 	}
 
@@ -85,23 +151,17 @@ final class Formatting implements Integration {
 	 * @return  void
 	 */
 	public function frontend_assets(): void {
-		wecodeart( 'assets' )->add_script( $this->make_handle(), [
-			'path' 		=> $this->get_asset( 'js', 'front' ),
-			'deps'		=> [ 'wecodeart-support-assets' ],
-			'load'		=> function( $blocks, $content, $template ) {
-				if( str_contains( $content, 'has-decoration' ) || str_contains( $template, 'has-decoration' ) ) {
-					wecodeart( 'styles' )->Components->load( [ 'modules/formatting' ] );
-				}
-				
-				if( str_contains( $content, 'has-popper' ) || str_contains( $template, 'has-popper' ) ) {
-					wecodeart( 'styles' )->Components->load( [ 'modules/formatting', 'tooltip', 'popover' ] );
-					
-					return true;
-				}
+		// Modules
+		if( ! function_exists( 'wp_register_script_module' ) ) {
+			return;
+		}
 
-				return false;
-			},
-		] );
+		\wp_register_script_module(
+			'@wecodeart/tooltip',
+			$this->get_asset( 'js', 'module' ),
+			[ '@wordpress/interactivity' ],
+			wecodeart( 'version' )
+		);
 	}
 
 	/**

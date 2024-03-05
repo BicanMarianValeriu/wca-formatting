@@ -40,27 +40,30 @@ export const popper = {
 	tagName: 'span',
 	className: 'has-popper',
 	attributes: {
-		'data-plugin': 'data-plugin',
-		'data-options': 'data-options',
-		'tabindex': 'tabindex'
+		'data-wp-context': 'data-wp-context',
 	},
 	edit({ isActive, value, onChange }) {
 		const activeFormat = getActiveFormat(value, name);
 
-		const { attributes = {
-			'data-plugin': 'tooltip',
-			'data-options': JSON.stringify({
-				title: '',
-			}),
-			'tabindex': "0"
+		const { attributes: oldAttributes = {
+			'data-options': '',
 		} } = activeFormat || {};
+
+		const { attributes = {
+			'data-wp-context': '',
+		} } = activeFormat || {};
+
+		const mergedAttributes = {
+			...attributes,
+			'data-wp-context': attributes['data-wp-context'] ? attributes['data-wp-context'] : oldAttributes['data-options']
+		};
 
 		const [isOpen, setIsOpen] = useState(false);
 		const toggle = () => setIsOpen(!isOpen);
 
-		const [state, setState] = useState({ ...attributes });
+		const [state, setState] = useState({ ...mergedAttributes });
 
-		useEffect(() => setState({ ...attributes }), [activeFormat]);
+		useEffect(() => setState({ ...mergedAttributes }), [activeFormat]);
 
 		return (
 			<>
@@ -77,20 +80,20 @@ export const popper = {
 					isActive={isActive}
 				/>
 				{isOpen && (
-					<Modal className="wecodeart-modal wecodeart-modal--popper" title={__('Settings', 'wecodeart')} onRequestClose={toggle}>
+					<Modal className="wecodeart-modal wecodeart-modal--popper" title={__('Settings')} onRequestClose={toggle}>
 						<Controls {...{ state, setState }} />
 						<ButtonGroup>
 							<Button isPrimary isLarge onClick={() => {
 								onChange(applyFormat(value, { type: name, attributes: state }));
 								toggle();
 							}}>
-								{__('Apply', 'wecodeart')}
+								{__('Apply')}
 							</Button>
 							<Button isDestructive isLarge onClick={() => {
 								onChange(removeFormat(value, name));
 								toggle();
 							}}>
-								{__('Remove', 'wecodeart')}
+								{__('Remove')}
 							</Button>
 						</ButtonGroup>
 					</Modal>

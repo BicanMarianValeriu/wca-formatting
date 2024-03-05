@@ -40,19 +40,19 @@ const Edit = ({ isActive, value, onChange }) => {
         <>
             <RichTextToolbarButton
                 icon={<Icon icon={code} />}
-                title={__('Abbreviation', 'wecodeart')}
+                title={__('Abbreviation')}
                 onClick={toggle}
                 isActive={isActive}
             />
             {isOpen && (
-                <Modal title={__('Insert Abbreviation', 'wecodeart')} onRequestClose={toggle}>
+                <Modal title={__('Abbreviation')} onRequestClose={toggle}>
                     <TextControl
-                        label={__('Title', 'wecodeart')}
+                        label={__('Title')}
                         value={title}
                         onChange={(title) => setState({ ...state, title })}
                     />
                     <Button isPrimary isLarge onClick={onClick}>
-                        {title ? __('Apply', 'wecodeart') : __('Remove', 'wecodeart')}
+                        {title ? __('Apply') : __('Remove')}
                     </Button>
                 </Modal>
             )}

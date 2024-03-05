@@ -8,7 +8,6 @@ const {
     components: {
         SelectControl,
         ToggleControl,
-        __experimentalNumberControl: NumberControl,
         TextControl,
         TextareaControl,
         TabPanel,
@@ -19,13 +18,13 @@ const {
 } = wp;
 
 const Controls = ({ state, setState }) => {
-    const options = JSON.parse(decodeURIComponent(state?.['data-options'] || '{}'));
+    const options = JSON.parse(decodeURIComponent(state?.['data-wp-context'] || '{}'));
 
     const setOptions = (value) => {
         let newOptions = { ...options, ...value };
         newOptions = Object.fromEntries(Object.entries(newOptions).filter(([_, v]) => v !== null && v !== ''));
 
-        setState({ ...state, 'data-options': encodeURIComponent(JSON.stringify(newOptions)) });
+        setState({ ...state, 'data-wp-context': encodeURIComponent(JSON.stringify(newOptions)) });
     };
 
     return (
@@ -35,11 +34,11 @@ const Controls = ({ state, setState }) => {
             tabs={[
                 {
                     name: 'content',
-                    title: __('Content', 'wecodeart'),
+                    title: __('Content'),
                 },
                 {
                     name: 'options',
-                    title: __('Options', 'wecodeart'),
+                    title: __('Options'),
                 },
             ]}
         >
@@ -50,22 +49,26 @@ const Controls = ({ state, setState }) => {
                     case 'content':
                         render = <>
                             <SelectControl
-                                label={__('Type', 'wecodeart')}
-                                value={state?.['data-plugin'] ?? 'tooltip'}
+                                label={__('Type')}
+                                value={options?.plugin ?? 'tooltip'}
                                 options={[
                                     { label: 'Tooltip', value: 'tooltip' },
                                     { label: 'Popover', value: 'popover' },
                                 ]}
-                                onChange={(type) => setState({ ...state, 'data-plugin': type })}
+                                onChange={(plugin) => {
+                                    const content = options?.plugin === 'popover' ? options?.content : '';
+
+                                    setOptions({ plugin, content });
+                                }}
                             />
                             <TextareaControl
-                                label={__('Title', 'wecodeart')}
+                                label={__('Title')}
                                 value={options?.title}
-                                onChange={(title) => setOptions({ title })}
+                                onChange={(title) => setOptions({ title: title ?? '' })}
                             />
-                            {state?.['data-plugin'] === 'popover' && (
+                            {options?.plugin === 'popover' && (
                                 <TextareaControl
-                                    label={__('Content', 'wecodeart')}
+                                    label={__('Content')}
                                     value={options?.content}
                                     onChange={(content) => setOptions({ content })}
                                 />
@@ -74,41 +77,39 @@ const Controls = ({ state, setState }) => {
                         break;
                     case 'options':
                         function templatePlaceholder() {
-                            const type = state?.['data-plugin'] ?? 'tooltip';
+                            const type = options?.plugin ?? 'tooltip';
 
-                            return `<div class="${type}" role="tooltip"><div class="${type}-arrow"></div><div class="${type}-inner"></div></div>`;
+                            return `<div class="wp-${type}" role="tooltip"><div class="wp-${type}__arrow"></div><div class="wp-${type}__inner"></div></div>`;
                         }
 
                         render = <>
                             <SelectControl
-                                label={__('Placement', 'wecodeart')}
+                                label={__('Position')}
                                 value={options?.placement}
                                 help={__('How to position the tooltip.', 'wecodeart')}
                                 options={[
-                                    { label: __('Default', 'wecodeart'), value: '' },
-                                    { label: __('Auto', 'wecodeart'), value: 'auto' },
-                                    { label: __('Top', 'wecodeart'), value: 'top' },
-                                    { label: __('Left', 'wecodeart'), value: 'left' },
-                                    { label: __('Right', 'wecodeart'), value: 'right' },
-                                    { label: __('Bottom', 'wecodeart'), value: 'bottom' },
+                                    { label: __('Default'), value: '' },
+                                    { label: __('Auto'), value: 'auto' },
+                                    { label: __('Top'), value: 'top' },
+                                    { label: __('Left'), value: 'left' },
+                                    { label: __('Right'), value: 'right' },
+                                    { label: __('Bottom'), value: 'bottom' },
                                 ]}
                                 onChange={(placement) => setOptions({ placement })}
                             />
-                            <NumberControl
-                                label={__('Delay', 'wecodeart')}
+                            <TextControl
+                                label={__('Delay')}
                                 value={options?.delay}
-                                placeholder="0"
-                                min={0}
-                                step={10}
-                                help={__('Delay showing and hiding the popover (ms) — doesn`t apply to manual trigger type.', 'wecodeart')}
-                                onChange={(delay) => setOptions({ delay: delay ? parseFloat(delay) : '' })}
+                                placeholder="0, 0"
+                                help={__('Delay showing and hiding the popover (ms) — doesn`t apply to manual trigger type. Comma separated values like: 500, 1000 for different show/hide delays.', 'wecodeart')}
+                                onChange={(delay) => setOptions({ delay: delay ? delay : '' })}
                             />
                             <TextControl
-                                label={__('Offset', 'wecodeart')}
+                                label={__('Offset')}
                                 value={options?.offset}
                                 placeholder="0, 0"
-                                help={__('Offset of the tooltip relative to its target — comma separated values like: 10,20.', 'wecodeart')}
-                                onChange={(offset) => setOptions({ offset })}
+                                help={__('Offset of the tooltip relative to its target — comma separated values like: 10, 20, 10 for different axis.', 'wecodeart')}
+                                onChange={(offset) => setOptions({ offset: offset ? offset : '' })}
                             />
                             <Panel className="wecodeart-panel wecodeart-panel--advanced">
                                 <PanelBody title={__('Advanced settings', 'wecodeart')} initialOpen={false}>
@@ -119,54 +120,54 @@ const Controls = ({ state, setState }) => {
                                             multiple={true}
                                             help={__('How tooltip is triggered: click, hover, focus, manual.', 'wecodeart')}
                                             options={[
-                                                { label: __('Default', 'wecodeart'), value: '' },
-                                                { label: __('Hover', 'wecodeart'), value: 'hover' },
-                                                { label: __('Focus', 'wecodeart'), value: 'focus' },
-                                                { label: __('Click', 'wecodeart'), value: 'click' },
-                                                { label: __('Manual', 'wecodeart'), value: 'manual' },
+                                                { label: __('Default'), value: '' },
+                                                { label: __('Hover'), value: 'hover' },
+                                                { label: __('Focus'), value: 'focus' },
+                                                { label: __('Click'), value: 'click' },
+                                                { label: __('Manual'), value: 'manual' },
                                             ]}
                                             onChange={(trigger) => setOptions({ trigger: trigger.join(' ') })}
                                         />
                                         <TextControl
-                                            label={__('Selector', 'wecodeart')}
+                                            label={__('Selector')}
                                             value={options?.selector}
                                             placeholder="false"
                                             help={__('If a selector is provided, tooltip objects will be delegated to the specified targets.', 'wecodeart')}
                                             onChange={(selector) => setOptions({ selector })}
                                         />
                                         <TextControl
-                                            label={__('Container', 'wecodeart')}
+                                            label={__('Container')}
                                             value={options?.container}
                                             placeholder="false"
                                             help={__('Appends the tooltip to a specific element.', 'wecodeart')}
                                             onChange={(container) => setOptions({ container })}
                                         />
                                         <TextControl
-                                            label={__('Custom class', 'wecodeart')}
-                                            value={options?.customClass}
+                                            label={__('Custom class')}
+                                            value={options?.className}
                                             help={__('Add classes to the tooltip when it is shown.', 'wecodeart')}
-                                            onChange={(customClass) => setOptions({ customClass })}
+                                            onChange={(className) => setOptions({ className })}
                                         />
                                         <ToggleControl
-                                            label={__('Animation', 'wecodeart')}
+                                            label={__('Animation')}
                                             checked={options?.animation ?? true}
                                             help={__('Apply a CSS fade transition to the tooltip.', 'wecodeart')}
                                             onChange={(animation) => setOptions({ animation })}
                                         />
                                         <ToggleControl
-                                            label={__('HTML', 'wecodeart')}
+                                            label={__('HTML')}
                                             checked={options?.html ?? false}
                                             help={__('Allow HTML in the tooltip.', 'wecodeart')}
                                             onChange={(html) => setOptions({ html })}
                                         />
                                         <ToggleControl
-                                            label={__('Sanitize', 'wecodeart')}
+                                            label={__('Sanitize')}
                                             checked={options?.sanitize ?? true}
                                             help={__(`Enable or disable the sanitization. If activated 'template', 'content' and 'title' options will be sanitized.`, 'wecodeart')}
                                             onChange={(sanitize) => setOptions({ sanitize })}
                                         />
                                         <TextareaControl
-                                            label={__('Template', 'wecodeart')}
+                                            label={__('Template')}
                                             help={__('Base HTML to use when creating the tooltip. ', 'wecodeart')}
                                             value={options?.template}
                                             placeholder={templatePlaceholder()}
