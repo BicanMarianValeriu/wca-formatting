@@ -1,5 +1,5 @@
 .wecodeart-modal {
-    &--popper {
+    &--floating {
         .components-modal {
             &__content {
                 margin-bottom: 2rem;
@@ -27,7 +27,7 @@
 }
 
 .wecodeart-tabs {
-    &--popper {
+    &--modal {
         --wp--spacing: 2rem;
         margin: 0 calc(-1 * var(--wp--spacing));
 
@@ -57,7 +57,7 @@
                         border-top-right-radius: 5px;
                     }
 
-                    & + button {
+                    &+button {
                         border-left: 0;
                     }
                 }
@@ -74,10 +74,6 @@
         }
 
         .components-base-control {
-            &:not(:last-child) {
-                margin-bottom: 1.25rem;
-            }
-
             &:last-child {
                 margin-bottom: 0;
             }

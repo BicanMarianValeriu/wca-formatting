@@ -202,6 +202,230 @@ const abbreviation = {
 
 /***/ }),
 
+/***/ "./inc/support/modules/formatting/src/js/counter/index.js":
+/*!****************************************************************!*\
+  !*** ./inc/support/modules/formatting/src/js/counter/index.js ***!
+  \****************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   counter: () => (/* binding */ counter)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+/**
+ * WordPress dependencies
+ */
+const {
+  i18n: {
+    __
+  },
+  element: {
+    useState,
+    useEffect
+  },
+  components: {
+    Dashicon,
+    Modal,
+    Button,
+    ButtonGroup,
+    TabPanel,
+    ToggleControl,
+    __experimentalNumberControl: NumberControl
+  },
+  richText: {
+    applyFormat,
+    removeFormat,
+    getActiveFormat
+  },
+  blockEditor: {
+    RichTextToolbarButton
+  }
+} = wp;
+
+/**
+ * Block constants
+ */
+const name = 'wca/counter';
+const counter = {
+  name,
+  title: __('Counter', 'wecodeart'),
+  tagName: 'span',
+  className: 'has-counter',
+  attributes: {
+    'data-wp-context': 'data-wp-context'
+  },
+  edit({
+    isActive,
+    value,
+    onChange
+  }) {
+    const {
+      text,
+      start,
+      end
+    } = value;
+    const selection = text.substring(start, end);
+    const activeFormat = getActiveFormat(value, name);
+    const {
+      attributes = {
+        'data-wp-context': JSON.stringify({
+          to: ''
+        })
+      }
+    } = activeFormat || {};
+
+    // Modal state
+    const [isOpen, setIsOpen] = useState(false);
+    const toggle = () => {
+      setIsOpen(!isOpen);
+      if (!selection || options.to.length) {
+        return;
+      }
+      const formatted = parseFloat(selection.replace(',', ''));
+      setOptions({
+        to: isNaN(formatted) ? 0 : formatted
+      });
+    };
+
+    // Options state
+    const [state, setState] = useState({
+      ...attributes
+    });
+    const options = JSON.parse(decodeURIComponent(state['data-wp-context'] || '{}'));
+    const setOptions = value => {
+      let newOptions = {
+        ...options,
+        ...value
+      };
+      newOptions = Object.fromEntries(Object.entries(newOptions).filter(([_, v]) => v !== null && v !== ''));
+      setState({
+        ...state,
+        'data-wp-context': encodeURIComponent(JSON.stringify(newOptions))
+      });
+    };
+    useEffect(() => setState({
+      ...attributes
+    }), [activeFormat]);
+    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichTextToolbarButton, {
+      icon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Dashicon, {
+        icon: "upload"
+      }),
+      title: __('Counter', 'wecodeart'),
+      onClick: toggle,
+      isActive: isActive
+    }), isOpen && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Modal, {
+      className: "wecodeart-modal wecodeart-modal--floating",
+      title: __('Settings'),
+      onRequestClose: toggle
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TabPanel, {
+      activeClass: "active-tab",
+      className: "wecodeart-tabs wecodeart-tabs--modal",
+      tabs: [{
+        name: 'content',
+        title: __('Content')
+      }, {
+        name: 'options',
+        title: __('Options')
+      }]
+    }, ({
+      name
+    }) => {
+      var _options$comma;
+      let render;
+      switch (name) {
+        case 'content':
+          render = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+            style: {
+              marginTop: 0
+            }
+          }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(NumberControl, {
+            label: __('Count to', 'wecodeart'),
+            value: options.to,
+            disabled: true
+          })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(NumberControl, {
+            label: __('Count from', 'wecodeart'),
+            value: options.from,
+            placeholder: 0,
+            min: 0,
+            help: __('Counter starts from a specific value.', 'wecodeart'),
+            onChange: from => setOptions({
+              from: from ? parseInt(from) : ''
+            })
+          })));
+          break;
+        case 'options':
+          render = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+            style: {
+              marginTop: 0
+            }
+          }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(NumberControl, {
+            label: __('Speed'),
+            value: options.speed,
+            placeholder: __('Default'),
+            min: 1000,
+            step: 10,
+            help: __('Duration of the counter animation - in ms.', 'wecodeart'),
+            onChange: speed => setOptions({
+              speed: speed ? parseInt(speed) : null
+            })
+          })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(NumberControl, {
+            label: __('Refresh'),
+            value: options.refresh,
+            placeholder: __('Default'),
+            min: 10,
+            step: 10,
+            help: __('Refresh interval of the counter animation - in ms.', 'wecodeart'),
+            onChange: refresh => setOptions({
+              refresh: refresh ? parseInt(refresh) : null
+            })
+          })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(NumberControl, {
+            label: __('Decimals'),
+            value: options.decimals,
+            placeholder: 0,
+            min: 0,
+            step: 1,
+            max: 10,
+            help: __('Allow decimals.', 'wecodeart'),
+            onChange: decimals => setOptions({
+              decimals: decimals ? parseInt(decimals) : null
+            })
+          })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
+            label: __('Comma'),
+            checked: (_options$comma = options.comma) !== null && _options$comma !== void 0 ? _options$comma : false,
+            help: __('Allow comma number formatting.', 'wecodeart'),
+            onChange: comma => setOptions({
+              comma: comma === true ? true : null
+            })
+          })));
+          break;
+      }
+      return render;
+    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(ButtonGroup, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
+      isPrimary: true,
+      isLarge: true,
+      onClick: () => {
+        onChange(applyFormat(value, {
+          type: name,
+          attributes: state
+        }));
+        toggle();
+      }
+    }, __('Apply')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
+      isDestructive: true,
+      isLarge: true,
+      onClick: () => {
+        onChange(removeFormat(value, name));
+        toggle();
+      }
+    }, __('Remove'))))));
+  }
+};
+
+/***/ }),
+
 /***/ "./inc/support/modules/formatting/src/js/decoration/index.js":
 /*!*******************************************************************!*\
   !*** ./inc/support/modules/formatting/src/js/decoration/index.js ***!
@@ -328,6 +552,355 @@ const decoration = {
         class: _class
       })
     }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(PreviewDecoration, null), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(ButtonGroup, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
+      isPrimary: true,
+      isLarge: true,
+      onClick: () => {
+        onChange(applyFormat(value, {
+          type: name,
+          attributes: state
+        }));
+        toggle();
+      }
+    }, __('Apply')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
+      isDestructive: true,
+      isLarge: true,
+      onClick: () => {
+        onChange(removeFormat(value, name));
+        toggle();
+      }
+    }, __('Remove')))));
+  }
+};
+
+/***/ }),
+
+/***/ "./inc/support/modules/formatting/src/js/floating/Controls.js":
+/*!********************************************************************!*\
+  !*** ./inc/support/modules/formatting/src/js/floating/Controls.js ***!
+  \********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+/**
+ * WordPress dependencies
+ */
+const {
+  i18n: {
+    __
+  },
+  components: {
+    SelectControl,
+    ToggleControl,
+    TextControl,
+    TextareaControl,
+    TabPanel,
+    Panel,
+    PanelBody,
+    PanelRow
+  }
+} = wp;
+const TEMPLATE_HTML = ['<div class="wp-floating" role="tooltip">', '<div class="wp-floating__arrow"></div>', '<h3 class="wp-floating__header"></h3>', '<div class="wp-floating__inner"></div>', '</div>'].join('');
+const Controls = ({
+  state,
+  setState
+}) => {
+  const options = JSON.parse(decodeURIComponent(state['data-wp-context'] || '{}'));
+  const setOptions = value => {
+    let newOptions = {
+      ...options,
+      ...value
+    };
+    newOptions = Object.fromEntries(Object.entries(newOptions).filter(([_, v]) => v !== null && v !== ''));
+    setState({
+      ...state,
+      'data-wp-context': encodeURIComponent(JSON.stringify(newOptions))
+    });
+  };
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TabPanel, {
+    activeClass: "active-tab",
+    className: "wecodeart-tabs wecodeart-tabs--modal",
+    tabs: [{
+      name: 'content',
+      title: __('Content')
+    }, {
+      name: 'options',
+      title: __('Options')
+    }]
+  }, ({
+    name
+  }) => {
+    var _options$plugin, _options$animation, _options$html, _options$sanitize;
+    let render;
+    switch (name) {
+      case 'content':
+        render = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
+          label: __('Type'),
+          value: (_options$plugin = options?.plugin) !== null && _options$plugin !== void 0 ? _options$plugin : 'tooltip',
+          options: [{
+            label: __('Tooltip'),
+            value: 'tooltip'
+          }, {
+            label: __('Popover'),
+            value: 'popover'
+          }],
+          onChange: plugin => {
+            setOptions({
+              plugin,
+              content: plugin === 'tooltip' ? '' : options?.content
+            });
+          }
+        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
+          label: __('Title'),
+          value: options?.title,
+          onChange: title => setOptions({
+            title: title !== null && title !== void 0 ? title : ''
+          })
+        }), options?.plugin === 'popover' && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
+          label: __('Content'),
+          value: options?.content,
+          onChange: content => setOptions({
+            content
+          })
+        }));
+        break;
+      case 'options':
+        render = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
+          label: __('Trigger', 'wecodeart'),
+          value: options?.trigger ? options.trigger.split(' ') : [''],
+          multiple: true,
+          help: __('How tooltip is triggered: click, hover, focus, manual.', 'wecodeart'),
+          options: [{
+            label: __('Default'),
+            value: ''
+          }, {
+            label: __('Hover'),
+            value: 'hover'
+          }, {
+            label: __('Focus'),
+            value: 'focus'
+          }, {
+            label: __('Click'),
+            value: 'click'
+          }, {
+            label: __('Manual'),
+            value: 'manual'
+          }],
+          onChange: trigger => setOptions({
+            trigger: trigger.join(' ')
+          })
+        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
+          label: __('Position'),
+          value: options?.placement,
+          help: __('How to position the tooltip.', 'wecodeart'),
+          options: [{
+            label: __('Default'),
+            value: ''
+          }, {
+            label: __('Auto'),
+            value: 'auto'
+          }, {
+            label: __('Top'),
+            value: 'top'
+          }, {
+            label: __('Left'),
+            value: 'left'
+          }, {
+            label: __('Right'),
+            value: 'right'
+          }, {
+            label: __('Bottom'),
+            value: 'bottom'
+          }],
+          onChange: placement => setOptions({
+            placement
+          })
+        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, {
+          className: "wecodeart-panel wecodeart-panel--advanced"
+        }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+          title: __('Advanced settings', 'wecodeart'),
+          initialOpen: false
+        }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+          label: __('Delay'),
+          value: options?.delay,
+          placeholder: "0, 0",
+          help: __('Delay showing and hiding the popover (ms) — doesn`t apply to manual trigger type.', 'wecodeart'),
+          onChange: delay => setOptions({
+            delay: delay ? delay : ''
+          })
+        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+          label: __('Offset'),
+          value: options?.offset,
+          placeholder: "0, 0",
+          help: __('Offset of the tooltip relative to its target — comma separated values like: 10, 20, 10 for different axis.', 'wecodeart'),
+          onChange: offset => setOptions({
+            offset: offset ? offset : ''
+          })
+        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+          label: __('Container'),
+          value: options?.container,
+          placeholder: "false",
+          help: __('Appends the tooltip to a specific element.', 'wecodeart'),
+          onChange: container => setOptions({
+            container
+          })
+        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+          label: __('Custom class'),
+          value: options?.className,
+          help: __('Add classes to the tooltip when it is shown.', 'wecodeart'),
+          onChange: className => setOptions({
+            className
+          })
+        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
+          label: __('Animation'),
+          checked: (_options$animation = options?.animation) !== null && _options$animation !== void 0 ? _options$animation : true,
+          help: __('Apply a CSS fade transition to the tooltip.', 'wecodeart'),
+          onChange: animation => setOptions({
+            animation
+          })
+        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
+          label: __('HTML'),
+          checked: (_options$html = options?.html) !== null && _options$html !== void 0 ? _options$html : false,
+          help: __('Allow HTML in the tooltip.', 'wecodeart'),
+          onChange: html => setOptions({
+            html
+          })
+        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
+          label: __('Sanitize'),
+          checked: (_options$sanitize = options?.sanitize) !== null && _options$sanitize !== void 0 ? _options$sanitize : true,
+          help: __(`Enable or disable the sanitization. If activated 'template', 'content' and 'title' options will be sanitized.`, 'wecodeart'),
+          onChange: sanitize => setOptions({
+            sanitize
+          })
+        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
+          label: __('Template'),
+          help: __('Base HTML to use when creating the tooltip. ', 'wecodeart'),
+          value: options?.template,
+          placeholder: TEMPLATE_HTML,
+          onChange: template => setOptions({
+            template
+          })
+        })))));
+        break;
+    }
+    return render;
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Controls);
+
+/***/ }),
+
+/***/ "./inc/support/modules/formatting/src/js/floating/index.js":
+/*!*****************************************************************!*\
+  !*** ./inc/support/modules/formatting/src/js/floating/index.js ***!
+  \*****************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   floating: () => (/* binding */ floating)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Controls__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Controls */ "./inc/support/modules/formatting/src/js/floating/Controls.js");
+
+/**
+ * WordPress dependencies
+ */
+const {
+  i18n: {
+    __
+  },
+  element: {
+    useState,
+    useEffect
+  },
+  components: {
+    Icon,
+    SVG,
+    Path,
+    Modal,
+    Button,
+    ButtonGroup
+  },
+  richText: {
+    applyFormat,
+    removeFormat,
+    getActiveFormat
+  },
+  blockEditor: {
+    RichTextToolbarButton
+  }
+} = wp;
+
+
+/**
+ * Block constants
+ */
+const name = 'wca/floating';
+const floating = {
+  name,
+  title: __('Floating UI', 'wecodeart'),
+  tagName: 'span',
+  className: 'has-floating',
+  attributes: {
+    'data-wp-context': 'data-wp-context'
+  },
+  edit({
+    isActive,
+    value,
+    onChange
+  }) {
+    const activeFormat = getActiveFormat(value, name);
+    const {
+      attributes: oldAttributes = {
+        'data-options': ''
+      }
+    } = activeFormat || {};
+    const {
+      attributes = {
+        'data-wp-context': ''
+      }
+    } = activeFormat || {};
+    const mergedAttributes = {
+      ...attributes,
+      'data-wp-context': attributes['data-wp-context'] ? attributes['data-wp-context'] : oldAttributes['data-options']
+    };
+    const [isOpen, setIsOpen] = useState(false);
+    const toggle = () => setIsOpen(!isOpen);
+    const [state, setState] = useState({
+      ...mergedAttributes
+    });
+    useEffect(() => setState({
+      ...mergedAttributes
+    }), [activeFormat]);
+    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichTextToolbarButton, {
+      icon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Icon, {
+        icon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(SVG, {
+          style: {
+            padding: 4
+          },
+          viewBox: "0 0 16 16"
+        }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Path, {
+          d: "M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-2.5a2 2 0 0 0-1.6.8L8 14.333 6.1 11.8a2 2 0 0 0-1.6-.8H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"
+        }))
+      }),
+      title: __('Floating UI', 'wecodeart'),
+      onClick: toggle,
+      isActive: isActive
+    }), isOpen && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Modal, {
+      className: "wecodeart-modal wecodeart-modal--floating",
+      title: __('Settings'),
+      onRequestClose: toggle
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Controls__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      state,
+      setState
+    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(ButtonGroup, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
       isPrimary: true,
       isLarge: true,
       onClick: () => {
@@ -616,15 +1189,15 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./inc/support/modules/formatting/src/js/popper/Controls.js":
-/*!******************************************************************!*\
-  !*** ./inc/support/modules/formatting/src/js/popper/Controls.js ***!
-  \******************************************************************/
+/***/ "./inc/support/modules/formatting/src/js/rotator/index.js":
+/*!****************************************************************!*\
+  !*** ./inc/support/modules/formatting/src/js/rotator/index.js ***!
+  \****************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   rotator: () => (/* binding */ rotator)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
@@ -636,252 +1209,25 @@ const {
   i18n: {
     __
   },
-  components: {
-    SelectControl,
-    ToggleControl,
-    TextControl,
-    TextareaControl,
-    TabPanel,
-    Panel,
-    PanelBody,
-    PanelRow
-  }
-} = wp;
-const Controls = ({
-  state,
-  setState
-}) => {
-  const options = JSON.parse(decodeURIComponent(state?.['data-wp-context'] || '{}'));
-  const setOptions = value => {
-    let newOptions = {
-      ...options,
-      ...value
-    };
-    newOptions = Object.fromEntries(Object.entries(newOptions).filter(([_, v]) => v !== null && v !== ''));
-    setState({
-      ...state,
-      'data-wp-context': encodeURIComponent(JSON.stringify(newOptions))
-    });
-  };
-  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TabPanel, {
-    activeClass: "active-tab",
-    className: "wecodeart-tabs wecodeart-tabs--popper",
-    tabs: [{
-      name: 'content',
-      title: __('Content')
-    }, {
-      name: 'options',
-      title: __('Options')
-    }]
-  }, ({
-    name
-  }) => {
-    var _options$plugin, _options$animation, _options$html, _options$sanitize;
-    let render;
-    switch (name) {
-      case 'content':
-        render = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
-          label: __('Type'),
-          value: (_options$plugin = options?.plugin) !== null && _options$plugin !== void 0 ? _options$plugin : 'tooltip',
-          options: [{
-            label: 'Tooltip',
-            value: 'tooltip'
-          }, {
-            label: 'Popover',
-            value: 'popover'
-          }],
-          onChange: plugin => {
-            const content = options?.plugin === 'popover' ? options?.content : '';
-            setOptions({
-              plugin,
-              content
-            });
-          }
-        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
-          label: __('Title'),
-          value: options?.title,
-          onChange: title => setOptions({
-            title: title !== null && title !== void 0 ? title : ''
-          })
-        }), options?.plugin === 'popover' && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
-          label: __('Content'),
-          value: options?.content,
-          onChange: content => setOptions({
-            content
-          })
-        }));
-        break;
-      case 'options':
-        function templatePlaceholder() {
-          var _options$plugin2;
-          const type = (_options$plugin2 = options?.plugin) !== null && _options$plugin2 !== void 0 ? _options$plugin2 : 'tooltip';
-          return `<div class="wp-${type}" role="tooltip"><div class="wp-${type}__arrow"></div><div class="wp-${type}__inner"></div></div>`;
-        }
-        render = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
-          label: __('Position'),
-          value: options?.placement,
-          help: __('How to position the tooltip.', 'wecodeart'),
-          options: [{
-            label: __('Default'),
-            value: ''
-          }, {
-            label: __('Auto'),
-            value: 'auto'
-          }, {
-            label: __('Top'),
-            value: 'top'
-          }, {
-            label: __('Left'),
-            value: 'left'
-          }, {
-            label: __('Right'),
-            value: 'right'
-          }, {
-            label: __('Bottom'),
-            value: 'bottom'
-          }],
-          onChange: placement => setOptions({
-            placement
-          })
-        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
-          label: __('Delay'),
-          value: options?.delay,
-          placeholder: "0, 0",
-          help: __('Delay showing and hiding the popover (ms) — doesn`t apply to manual trigger type. Comma separated values like: 500, 1000 for different show/hide delays.', 'wecodeart'),
-          onChange: delay => setOptions({
-            delay: delay ? delay : ''
-          })
-        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
-          label: __('Offset'),
-          value: options?.offset,
-          placeholder: "0, 0",
-          help: __('Offset of the tooltip relative to its target — comma separated values like: 10, 20, 10 for different axis.', 'wecodeart'),
-          onChange: offset => setOptions({
-            offset: offset ? offset : ''
-          })
-        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Panel, {
-          className: "wecodeart-panel wecodeart-panel--advanced"
-        }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
-          title: __('Advanced settings', 'wecodeart'),
-          initialOpen: false
-        }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
-          label: __('Trigger', 'wecodeart'),
-          value: options?.trigger ? options.trigger.split(' ') : [''],
-          multiple: true,
-          help: __('How tooltip is triggered: click, hover, focus, manual.', 'wecodeart'),
-          options: [{
-            label: __('Default'),
-            value: ''
-          }, {
-            label: __('Hover'),
-            value: 'hover'
-          }, {
-            label: __('Focus'),
-            value: 'focus'
-          }, {
-            label: __('Click'),
-            value: 'click'
-          }, {
-            label: __('Manual'),
-            value: 'manual'
-          }],
-          onChange: trigger => setOptions({
-            trigger: trigger.join(' ')
-          })
-        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
-          label: __('Selector'),
-          value: options?.selector,
-          placeholder: "false",
-          help: __('If a selector is provided, tooltip objects will be delegated to the specified targets.', 'wecodeart'),
-          onChange: selector => setOptions({
-            selector
-          })
-        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
-          label: __('Container'),
-          value: options?.container,
-          placeholder: "false",
-          help: __('Appends the tooltip to a specific element.', 'wecodeart'),
-          onChange: container => setOptions({
-            container
-          })
-        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
-          label: __('Custom class'),
-          value: options?.className,
-          help: __('Add classes to the tooltip when it is shown.', 'wecodeart'),
-          onChange: className => setOptions({
-            className
-          })
-        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
-          label: __('Animation'),
-          checked: (_options$animation = options?.animation) !== null && _options$animation !== void 0 ? _options$animation : true,
-          help: __('Apply a CSS fade transition to the tooltip.', 'wecodeart'),
-          onChange: animation => setOptions({
-            animation
-          })
-        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
-          label: __('HTML'),
-          checked: (_options$html = options?.html) !== null && _options$html !== void 0 ? _options$html : false,
-          help: __('Allow HTML in the tooltip.', 'wecodeart'),
-          onChange: html => setOptions({
-            html
-          })
-        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
-          label: __('Sanitize'),
-          checked: (_options$sanitize = options?.sanitize) !== null && _options$sanitize !== void 0 ? _options$sanitize : true,
-          help: __(`Enable or disable the sanitization. If activated 'template', 'content' and 'title' options will be sanitized.`, 'wecodeart'),
-          onChange: sanitize => setOptions({
-            sanitize
-          })
-        }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextareaControl, {
-          label: __('Template'),
-          help: __('Base HTML to use when creating the tooltip. ', 'wecodeart'),
-          value: options?.template,
-          placeholder: templatePlaceholder(),
-          onChange: template => setOptions({
-            template
-          })
-        })))));
-        break;
-    }
-    return render;
-  });
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Controls);
-
-/***/ }),
-
-/***/ "./inc/support/modules/formatting/src/js/popper/index.js":
-/*!***************************************************************!*\
-  !*** ./inc/support/modules/formatting/src/js/popper/index.js ***!
-  \***************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   popper: () => (/* binding */ popper)
-/* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Controls__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Controls */ "./inc/support/modules/formatting/src/js/popper/Controls.js");
-
-/**
- * WordPress dependencies
- */
-const {
-  i18n: {
-    __
+  data: {
+    select
   },
   element: {
     useState,
     useEffect
   },
   components: {
-    Icon,
-    SVG,
-    Path,
+    Dashicon,
     Modal,
+    TabPanel,
     Button,
-    ButtonGroup
+    ButtonGroup,
+    TextControl,
+    BaseControl,
+    SelectControl,
+    ToggleControl,
+    __experimentalHStack: HStack,
+    __experimentalNumberControl: NumberControl
   },
   richText: {
     applyFormat,
@@ -893,16 +1239,15 @@ const {
   }
 } = wp;
 
-
 /**
  * Block constants
  */
-const name = 'wca/popper';
-const popper = {
+const name = 'wca/rotator';
+const rotator = {
   name,
-  title: __('Popper', 'wecodeart'),
+  title: __('String rotator', 'wecodeart'),
   tagName: 'span',
-  className: 'has-popper',
+  className: 'has-rotator',
   attributes: {
     'data-wp-context': 'data-wp-context'
   },
@@ -911,51 +1256,194 @@ const popper = {
     value,
     onChange
   }) {
+    const {
+      text,
+      start,
+      end
+    } = value;
+    const selection = text.substring(start, end);
     const activeFormat = getActiveFormat(value, name);
     const {
-      attributes: oldAttributes = {
-        'data-options': ''
-      }
-    } = activeFormat || {};
+      wecodeart: {
+        rotatorStyles = []
+      } = {}
+    } = select('core/editor').getEditorSettings();
     const {
       attributes = {
-        'data-wp-context': ''
+        'data-wp-context': JSON.stringify({
+          strings: [],
+          effect: 'slide'
+        })
       }
     } = activeFormat || {};
-    const mergedAttributes = {
-      ...attributes,
-      'data-wp-context': attributes['data-wp-context'] ? attributes['data-wp-context'] : oldAttributes['data-options']
-    };
+
+    // Modal state
     const [isOpen, setIsOpen] = useState(false);
-    const toggle = () => setIsOpen(!isOpen);
+    const toggle = () => {
+      setIsOpen(!isOpen);
+      if (!selection || options.strings.length >= 1) {
+        return;
+      }
+      setOptions({
+        strings: [selection]
+      });
+    };
+
+    // Options state
     const [state, setState] = useState({
-      ...mergedAttributes
+      ...attributes
     });
+    const options = JSON.parse(decodeURIComponent(state['data-wp-context'] || '{}'));
+    const setOptions = value => {
+      let newOptions = {
+        ...options,
+        ...value
+      };
+      newOptions = Object.fromEntries(Object.entries(newOptions).filter(([_, v]) => v !== null && v !== ''));
+      setState({
+        ...state,
+        'data-wp-context': encodeURIComponent(JSON.stringify(newOptions))
+      });
+    };
+    const addWord = () => {
+      const updatedItems = [...options.strings, ''];
+      setOptions({
+        strings: updatedItems
+      });
+    };
+    const removeWord = index => {
+      const updatedItems = [...options.strings];
+      updatedItems.splice(index, 1);
+      setOptions({
+        strings: updatedItems
+      });
+    };
+    const updateWord = (index, value) => {
+      const updatedItems = [...options.strings];
+      updatedItems[index] = value;
+      setOptions({
+        strings: updatedItems
+      });
+    };
+    const hasLetterSupport = rotatorStyles.filter(({
+      letters,
+      value
+    }) => letters && value === options.effect).length;
     useEffect(() => setState({
-      ...mergedAttributes
+      ...attributes
     }), [activeFormat]);
     return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichTextToolbarButton, {
-      icon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Icon, {
-        icon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(SVG, {
-          style: {
-            padding: 4
-          },
-          viewBox: "0 0 16 16"
-        }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Path, {
-          d: "M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-2.5a2 2 0 0 0-1.6.8L8 14.333 6.1 11.8a2 2 0 0 0-1.6-.8H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"
-        }))
+      icon: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Dashicon, {
+        icon: "editor-ol"
       }),
-      title: __('Popper', 'wecodeart'),
+      title: __('String rotator', 'wecodeart'),
       onClick: toggle,
       isActive: isActive
     }), isOpen && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Modal, {
-      className: "wecodeart-modal wecodeart-modal--popper",
+      className: "wecodeart-modal wecodeart-modal--floating",
       title: __('Settings'),
       onRequestClose: toggle
-    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Controls__WEBPACK_IMPORTED_MODULE_1__["default"], {
-      state,
-      setState
-    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(ButtonGroup, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TabPanel, {
+      activeClass: "active-tab",
+      className: "wecodeart-tabs wecodeart-tabs--modal",
+      tabs: [{
+        name: 'content',
+        title: __('Content')
+      }, {
+        name: 'options',
+        title: __('Options')
+      }]
+    }, ({
+      name
+    }) => {
+      var _options$letters;
+      let render;
+      switch (name) {
+        case 'content':
+          render = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(BaseControl, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h4", {
+            style: {
+              marginTop: 0
+            }
+          }, __('Text strings', 'wecodeart')), options.strings.map((item, index) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(HStack, {
+            key: index,
+            style: {
+              alignItems: 'stretch'
+            }
+          }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+            style: {
+              minWidth: 250
+            },
+            disabled: index === 0,
+            placeholder: "Lorem ipsum dolor",
+            value: item,
+            onChange: value => updateWord(index, value)
+          }), index !== 0 && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
+            style: {
+              height: 32
+            },
+            isDestructive: true,
+            isSmall: true,
+            onClick: () => removeWord(index)
+          }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Dashicon, {
+            icon: "no"
+          })))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
+            isPrimary: true,
+            onClick: addWord
+          }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Dashicon, {
+            icon: "plus-alt"
+          }))));
+          break;
+        case 'options':
+          render = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+            style: {
+              marginTop: 0
+            }
+          }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(SelectControl, {
+            label: __('Style'),
+            value: options.effect,
+            options: rotatorStyles,
+            onChange: effect => setOptions({
+              effect
+            })
+          })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(NumberControl, {
+            label: __('Delay'),
+            value: options.changeDelay,
+            placeholder: __('Default'),
+            min: 100,
+            step: 100,
+            help: __('Delay for changing the next string.', 'wecodeart'),
+            onChange: changeDelay => setOptions({
+              changeDelay: changeDelay ? parseInt(changeDelay) : ''
+            })
+          })), hasLetterSupport ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(ToggleControl, {
+            label: __('Letters'),
+            checked: (_options$letters = options.letters) !== null && _options$letters !== void 0 ? _options$letters : false,
+            help: __('Animate letters - if style supports it.', 'wecodeart'),
+            onChange: letters => setOptions({
+              letters: letters ? true : null,
+              letterDelay: letters !== true ? null : options.letterDelay
+            })
+          }), options.letters && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(NumberControl, {
+            label: __('Letter Delay'),
+            value: options.letterDelay,
+            placeholder: __('Default'),
+            min: 10,
+            step: 10,
+            help: __('Delay for changing the next letter - if style supports it.', 'wecodeart'),
+            onChange: letterDelay => setOptions({
+              letterDelay: letterDelay ? parseInt(letterDelay) : ''
+            })
+          })) : null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(TextControl, {
+            label: __('Custom class'),
+            value: options?.className,
+            onChange: className => setOptions({
+              className
+            })
+          })));
+          break;
+      }
+      return render;
+    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(ButtonGroup, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(Button, {
       isPrimary: true,
       isLarge: true,
       onClick: () => {
@@ -972,7 +1460,7 @@ const popper = {
         onChange(removeFormat(value, name));
         toggle();
       }
-    }, __('Remove')))));
+    }, __('Remove'))))));
   }
 };
 
@@ -1180,13 +1668,15 @@ var __webpack_exports__ = {};
   !*** ./inc/support/modules/formatting/src/js/index.js ***!
   \********************************************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _popper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./popper */ "./inc/support/modules/formatting/src/js/popper/index.js");
-/* harmony import */ var _justify__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./justify */ "./inc/support/modules/formatting/src/js/justify/index.js");
-/* harmony import */ var _underline__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./underline */ "./inc/support/modules/formatting/src/js/underline/index.js");
-/* harmony import */ var _decoration__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./decoration */ "./inc/support/modules/formatting/src/js/decoration/index.js");
-/* harmony import */ var _abbreviation__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./abbreviation */ "./inc/support/modules/formatting/src/js/abbreviation/index.js");
-/* harmony import */ var _plugin__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./plugin */ "./inc/support/modules/formatting/src/js/plugin/index.js");
-/* harmony import */ var _scss_index_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./../scss/index.scss */ "./inc/support/modules/formatting/src/scss/index.scss");
+/* harmony import */ var _counter__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./counter */ "./inc/support/modules/formatting/src/js/counter/index.js");
+/* harmony import */ var _floating__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./floating */ "./inc/support/modules/formatting/src/js/floating/index.js");
+/* harmony import */ var _justify__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./justify */ "./inc/support/modules/formatting/src/js/justify/index.js");
+/* harmony import */ var _underline__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./underline */ "./inc/support/modules/formatting/src/js/underline/index.js");
+/* harmony import */ var _decoration__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./decoration */ "./inc/support/modules/formatting/src/js/decoration/index.js");
+/* harmony import */ var _abbreviation__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./abbreviation */ "./inc/support/modules/formatting/src/js/abbreviation/index.js");
+/* harmony import */ var _rotator__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./rotator */ "./inc/support/modules/formatting/src/js/rotator/index.js");
+/* harmony import */ var _plugin__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./plugin */ "./inc/support/modules/formatting/src/js/plugin/index.js");
+/* harmony import */ var _scss_index_scss__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./../scss/index.scss */ "./inc/support/modules/formatting/src/scss/index.scss");
 /**
  * WordPress dependencies
  */
@@ -1207,8 +1697,10 @@ const {
 
 
 
+
+
 function registerWeCodeArtFormats() {
-  [_popper__WEBPACK_IMPORTED_MODULE_0__.popper, _justify__WEBPACK_IMPORTED_MODULE_1__.justify, _underline__WEBPACK_IMPORTED_MODULE_2__.underline, _decoration__WEBPACK_IMPORTED_MODULE_3__.decoration, _abbreviation__WEBPACK_IMPORTED_MODULE_4__.abbreviation].forEach(({
+  [_counter__WEBPACK_IMPORTED_MODULE_0__.counter, _floating__WEBPACK_IMPORTED_MODULE_1__.floating, _justify__WEBPACK_IMPORTED_MODULE_2__.justify, _rotator__WEBPACK_IMPORTED_MODULE_6__.rotator, _underline__WEBPACK_IMPORTED_MODULE_3__.underline, _decoration__WEBPACK_IMPORTED_MODULE_4__.decoration, _abbreviation__WEBPACK_IMPORTED_MODULE_5__.abbreviation].forEach(({
     name,
     ...settings
   }) => {
@@ -1221,7 +1713,7 @@ function registerFormattingPlugin() {
   const {
     name,
     render
-  } = _plugin__WEBPACK_IMPORTED_MODULE_5__["default"];
+  } = _plugin__WEBPACK_IMPORTED_MODULE_7__["default"];
   registerPlugin(name, {
     icon: false,
     render

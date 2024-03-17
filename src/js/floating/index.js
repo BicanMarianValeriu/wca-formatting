@@ -32,13 +32,13 @@ import Controls from './Controls';
 /**
  * Block constants
  */
-const name = 'wca/popper';
+const name = 'wca/floating';
 
-export const popper = {
+export const floating = {
 	name,
-	title: __('Popper', 'wecodeart'),
+	title: __('Floating UI', 'wecodeart'),
 	tagName: 'span',
-	className: 'has-popper',
+	className: 'has-floating',
 	attributes: {
 		'data-wp-context': 'data-wp-context',
 	},
@@ -75,12 +75,12 @@ export const popper = {
 							</SVG>
 						} />
 					}
-					title={__('Popper', 'wecodeart')}
+					title={__('Floating UI', 'wecodeart')}
 					onClick={toggle}
 					isActive={isActive}
 				/>
 				{isOpen && (
-					<Modal className="wecodeart-modal wecodeart-modal--popper" title={__('Settings')} onRequestClose={toggle}>
+					<Modal className="wecodeart-modal wecodeart-modal--floating" title={__('Settings')} onRequestClose={toggle}>
 						<Controls {...{ state, setState }} />
 						<ButtonGroup>
 							<Button isPrimary isLarge onClick={() => {

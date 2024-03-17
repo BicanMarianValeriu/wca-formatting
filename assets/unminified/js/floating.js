@@ -16,21 +16,17 @@ const {
         execute,
         executeAfterTransition,
         getElement: getDOMElement,
-        isElement,
+        findShadowRoot,
+        validateConfig,
         isRTL,
-        toType = object => {
-            if (object === null || object === undefined) {
-                return `${object}`;
-            }
-
-            return Object.prototype.toString.call(object).match(/\s([a-z]+)/i)[1].toLowerCase();
-        }
+        noop,
     },
     Events,
     Template
 } = wecodeart;
 
-const NAME = 'tooltip';
+const NAME = 'floating';
+const NAMESPACE = `wecodeart/${NAME}`;
 const DATA_KEY = `wp.${NAME}`;
 const EVENT_KEY = `.${DATA_KEY}`;
 const EVENT_SHOW = `show${EVENT_KEY}`;
@@ -44,8 +40,9 @@ const TRIGGER_FOCUS = 'focus';
 const TRIGGER_CLICK = 'click';
 const TRIGGER_MANUAL = 'manual';
 
-const SELECTOR_TOOLTIP_ARROW = '.wp-tooltip__arrow';
-const SELECTOR_TOOLTIP_INNER = '.wp-tooltip__inner';
+const SELECTOR_TOOLTIP_ARROW = '.wp-floating__arrow';
+const SELECTOR_TOOLTIP_HEAD = '.wp-floating__head';
+const SELECTOR_TOOLTIP_BODY = '.wp-floating__body';
 
 const AttachmentMap = {
     AUTO: 'auto',
@@ -55,63 +52,20 @@ const AttachmentMap = {
     LEFT: isRTL() ? 'right' : 'left'
 };
 
-const findShadowRoot = element => {
-    if (!document.documentElement.attachShadow) {
-        return null;
-    }
-
-    // Can find the shadow root otherwise it'll return the document
-    if (typeof element.getRootNode === 'function') {
-        const root = element.getRootNode();
-        return root instanceof ShadowRoot ? root : null;
-    }
-
-    if (element instanceof ShadowRoot) {
-        return element;
-    }
-
-    // when we don't find a shadow root
-    if (!element.parentNode) {
-        return null;
-    }
-
-    return findShadowRoot(element.parentNode);
-};
-
-const noop = () => { };
-
-const DefaultType = {
-    isEnabled: '(boolean|function)',
-    boundary: '(string|element)',
-    placement: '(string|function)',
-    className: '(string|function)',
-    fallbackPlacements: 'array',
-    offset: '(array|object|string|function)',
-    delay: '(number|object)',
-    animation: 'boolean',
-    container: '(string|element|boolean|null)',
-    html: 'boolean',
-    sanitize: 'boolean',
-    sanitizeFn: '(null|function)',
-    selector: '(string|boolean)',
-    template: 'string',
-    title: '(string|element|function)',
-    trigger: 'string'
-};
-
-// State holds global vars for all DOM nodes
-// Context holds each DOM node state
-// Config should hold some defaults/translations etc (static data)
-
-const { state, actions, callbacks } = store('wecodeart/tooltip', {
+const { state, actions, callbacks } = store(NAMESPACE, {
     state: {
+        get getContent() {
+            const { content } = callbacks.getConfig();
+
+            return callbacks.resolvePossibleFunction(content);
+        },
         get getTitle() {
             const { title } = callbacks.getConfig();
 
             return callbacks.resolvePossibleFunction(title);
         },
         get isWithContent() {
-            return Boolean(state.getTitle);
+            return Boolean(state.getTitle || state.getContent);
         },
         get isWithActiveTrigger() {
             const { activeTrigger = {} } = callbacks.getConfig();
@@ -314,15 +268,16 @@ const { state, actions, callbacks } = store('wecodeart/tooltip', {
     // Private, mostly!
     callbacks: {
         getTemplateFactory: (content) => {
-            const context = callbacks.getConfig();
+            const context = getContext();
 
             if (context.templateFactory) {
                 context.templateFactory.changeContent(content);
             } else {
+                const config = callbacks.getConfig();
                 context.templateFactory = new Template({
-                    ...context,
-                    content,
-                    extraClass: callbacks.resolvePossibleFunction(context.className)
+                    ...config,
+                    content, // Overwrite content with object
+                    extraClass: callbacks.resolvePossibleFunction(config.className)
                 });
             }
 
@@ -332,18 +287,40 @@ const { state, actions, callbacks } = store('wecodeart/tooltip', {
             const context = getContext();
 
             if (!context.tip) {
-                context.tip = callbacks.createTipElement(context.newContent || {
-                    [SELECTOR_TOOLTIP_INNER]: state.getTitle
-                });
+                context.tip = callbacks.createTipElement(context.newContent || callbacks.getContentForTemplate());
             }
 
             return context.tip;
+        },
+        getContentForTemplate: () => {
+            const { plugin } = callbacks.getConfig();
+
+            let object = {};
+
+            switch (plugin) {
+                case 'popover':
+                    object = {
+                        [SELECTOR_TOOLTIP_HEAD]: state.getTitle,
+                        [SELECTOR_TOOLTIP_BODY]: state.getContent,
+                    };
+                    break;
+                default:
+                    object = {
+                        [SELECTOR_TOOLTIP_BODY]: state.getTitle
+                    };
+                    break;
+            }
+
+            return object;
+
         },
         createTipElement: (content) => {
             const tip = callbacks.getTemplateFactory(content).toHtml();
 
             tip.classList.remove('fade', 'show');
             tip.classList.add(`wp-${NAME}--auto`);
+            const { plugin = 'tooltip' } = callbacks.getConfig();
+            tip.classList.add(`wp-${NAME}--${plugin}`);
 
             const tipId = callbacks.getUID().toString();
 
@@ -390,7 +367,7 @@ const { state, actions, callbacks } = store('wecodeart/tooltip', {
                     offset({ ...getOffset }),
                     flip({ fallbackPlacements }),
                     shift({ crossAxis: true }),
-                    arrow({ element: arrowEl }),
+                    arrowEl ? arrow({ element: arrowEl }) : false,
                     inline(),
                     preventOverflow,
                     setPlacement,
@@ -431,7 +408,7 @@ const { state, actions, callbacks } = store('wecodeart/tooltip', {
         getConfig: () => {
             const context = getContext();
 
-            let config = { ...getConfig(), ...context };
+            let config = { ...state, ...context };
 
             // Get container.
             config.container = !context.container ? document.body : getDOMElement(context.container);
@@ -468,21 +445,10 @@ const { state, actions, callbacks } = store('wecodeart/tooltip', {
                     break;
             }
 
-            return applyFilters('wecodeart/interactive/config', config, NAME);
+            return applyFilters('wecodeart.interactive.config', config, NAME);
         },
         validateConfig: () => {
-            const config = callbacks.getConfig();
-
-            for (const [property, expectedTypes] of Object.entries(DefaultType)) {
-                const value = config[property];
-                const valueType = isElement(value) ? 'element' : toType(value);
-
-                if (!new RegExp(expectedTypes).test(valueType)) {
-                    throw new TypeError(
-                        `${NAME.toUpperCase()}: Option "${property}" provided type "${valueType}" but expected type "${expectedTypes}".`
-                    );
-                }
-            }
+            return validateConfig(NAME, callbacks.getConfig(), getConfig(NAMESPACE));
         },
         getUID: () => {
             let prefix = `wp-${NAME}-`;

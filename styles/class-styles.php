@@ -94,17 +94,6 @@ class Styles extends Base {
         $SVG_Oval_3 = encode_svg_data( $SVG_Oval_3 );
 
         return <<<CSS
-            .has-popper {
-                text-decoration: 1px underline dotted;
-                cursor: help;
-            }
-            .has-popper:focus {
-                outline: 1px dotted;
-            }
-            .has-popper[data-plugin=popover],
-            .has-popper[data-wp-context*=popover] {
-                cursor: pointer;
-            }
             .has-decoration {
                 position: relative;
                 z-index: 1;
