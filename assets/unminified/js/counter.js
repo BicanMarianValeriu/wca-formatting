@@ -120,8 +120,6 @@ const { state, actions, callbacks } = store(NAMESPACE, {
 
             return applyFilters('wecodeart.interactive.config', config, NAME);
         },
-        validateConfig() {
-            return validateConfig(NAME, callbacks.getConfig(), getConfig(NAMESPACE));
-        },
+        validateConfig: () => validateConfig(NAME, callbacks.getConfig(), getConfig(NAMESPACE)),
     }
 });
