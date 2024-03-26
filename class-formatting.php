@@ -10,6 +10,7 @@
  * @copyright   Copyright (c) 2024, WeCodeArt Framework
  * @since 		6.3.0
  * @version		6.3.7
+ * @requires	6.3.7
  */
 
 namespace WeCodeArt\Support\Modules;
@@ -64,15 +65,15 @@ final class Formatting implements Integration {
 	 */
 	public function render_block( string $content = '' ): string {
 		// Decoration
-		if( str_contains( $content, 'has-decoration' ) ) {
+		if( strpos( $content, 'has-decoration' ) ) {
 			\wecodeart( 'styles' )->Components->load( [ 'formatting' ] );
 		}
 
+		$p = new WP_HTML_Tag_Processor( $content );
+		
 		// Floating
-		if ( strpos( $content, 'has-floating' ) || strpos( $content, 'has-popper' ) ) {
+		if ( strpos( $content, 'has-floating' ) ) {
 			\wecodeart( 'styles' )->Components->load( [ 'formatting', 'floating/tooltip', 'floating/popover' ] );
-
-			$p = new WP_HTML_Tag_Processor( $content );
 
 			while( $p->next_tag( [ 'tag_name' => 'span', 'class_name' => 'has-floating' ] ) ) {
 				$json 	= json_decode( urldecode( $p->get_attribute( 'data-wp-context' ) ), true );
@@ -99,10 +100,10 @@ final class Formatting implements Integration {
 					}
 
 					$p->set_attribute( 'tabindex', '0' );
-
-					$content = $p->get_updated_html();
 				}
 			}
+
+			$content = $p->get_updated_html();
 
 			\wp_enqueue_script_module( '@wecodeart/floating' );
 
@@ -153,8 +154,6 @@ final class Formatting implements Integration {
 
 		// Rotator
 		if ( strpos( $content, 'has-rotator' ) ) {
-			$p = new WP_HTML_Tag_Processor( $content );
-
 			while( $p->next_tag( [ 'tag_name' => 'span', 'class_name' => 'has-rotator' ] ) ) {
 				$json 	= json_decode( urldecode( $p->get_attribute( 'data-wp-context' ) ), true );
 
@@ -178,12 +177,12 @@ final class Formatting implements Integration {
 						$p->add_class( $class );
 					}
 
-					$content = $p->get_updated_html();
-
 					// CSS Requirements
 					\wecodeart( 'styles' )->Components->load( [ 'rotator/' . $effect ] );
 				}
 			}
+
+			$content = $p->get_updated_html();
 
 			// Template replacement
 			$pattern = '/(<span[^>]+class="[^"]*has-rotator[^"]*"[^>]*>).*?(<\/span>)/';
@@ -197,9 +196,9 @@ final class Formatting implements Integration {
 				'effect'		=> 'slide',
 				'direction' 	=> 1,
 				'changeDelay' 	=> 3000,
+				'className'		=> '',
 				'letters'		=> null,
 				'letterDelay'	=> 100,
-				'className'		=> '',
 			] ) );
 				
 			\wp_interactivity_config( 'wecodeart/rotator', [
@@ -215,9 +214,9 @@ final class Formatting implements Integration {
 
 		// Counter
 		if ( strpos( $content, 'has-counter' ) ) {
-			$p = new WP_HTML_Tag_Processor( $content );
 
 			$from = [];
+
 			while( $p->next_tag( [ 'tag_name' => 'span', 'class_name' => 'has-counter' ] ) ) {
 				$json 	= json_decode( urldecode( $p->get_attribute( 'data-wp-context' ) ), true );
 
@@ -229,10 +228,10 @@ final class Formatting implements Integration {
 					$p->set_attribute( 'data-wp-init--validate', 'callbacks.validateConfig' );
 					$p->set_attribute( 'data-wp-init--observe', 'actions.observe' );
 					$p->set_attribute( 'data-wp-text', 'state.countTo' );
-
-					$content = $p->get_updated_html();
 				}
 			}
+
+			$content = $p->get_updated_html();
 
 			// Foreach of the tags found above, update innerHTML with the from value
 			// while making sure we dont exceed the length of $from array
@@ -275,7 +274,7 @@ final class Formatting implements Integration {
 				'onComplete'=> '(null|function)',
 			] );
 		}
-		
+
 		return $content;
 	}
 
