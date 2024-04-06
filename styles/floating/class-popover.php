@@ -38,7 +38,7 @@ class Popover extends Base {
         return <<<CSS
             .wp-floating--popover {
                 --wp--floating--zindex: 70;
-                --wp--floating--max-width: 276px;
+                --wp--floating--max-width: 275px;
                 --wp--floating--padding-x: 1rem;
                 --wp--floating--padding-y: 1rem;
                 --wp--floating--color: var(--wp--preset--color--dark);
