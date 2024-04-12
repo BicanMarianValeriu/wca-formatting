@@ -52,7 +52,7 @@ class Floating extends Base {
                 --wp--floating--max-width: 500px;
                 --wp--floating--padding-x: 0.5rem;
                 --wp--floating--padding-y: 0.25rem;
-                --wp--floating--margin: ;
+                --wp--floating--margin: initial;
                 --wp--floating--font-size: var(--wp--preset--font-size--small);
                 --wp--floating--color: var(--wp--preset--color--dark);
                 --wp--floating--border-radius: 3px;

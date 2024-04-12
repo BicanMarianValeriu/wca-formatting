@@ -9,8 +9,7 @@
  * @subpackage 	Support\Modules\Formatting
  * @copyright   Copyright (c) 2024, WeCodeArt Framework
  * @since 		6.3.0
- * @version		6.3.7
- * @requires	6.3.7
+ * @version		6.4.2
  */
 
 namespace WeCodeArt\Support\Modules;
@@ -69,10 +68,10 @@ final class Formatting implements Integration {
 			\wecodeart( 'styles' )->Components->load( [ 'formatting' ] );
 		}
 
-		$p = new WP_HTML_Tag_Processor( $content );
-		
 		// Floating
 		if ( strpos( $content, 'has-floating' ) ) {
+			$p = wecodeart( 'dom' )::procesor( $content );
+
 			\wecodeart( 'styles' )->Components->load( [ 'formatting', 'floating/tooltip', 'floating/popover' ] );
 
 			while( $p->next_tag( [ 'tag_name' => 'span', 'class_name' => 'has-floating' ] ) ) {
@@ -154,6 +153,8 @@ final class Formatting implements Integration {
 
 		// Rotator
 		if ( strpos( $content, 'has-rotator' ) ) {
+			$p = wecodeart( 'dom' )::procesor( $content );
+
 			while( $p->next_tag( [ 'tag_name' => 'span', 'class_name' => 'has-rotator' ] ) ) {
 				$json 	= json_decode( urldecode( $p->get_attribute( 'data-wp-context' ) ), true );
 
@@ -184,10 +185,13 @@ final class Formatting implements Integration {
 
 			$content = $p->get_updated_html();
 
-			// Template replacement
-			$pattern = '/(<span[^>]+class="[^"]*has-rotator[^"]*"[^>]*>).*?(<\/span>)/';
+			// Template replacement - skipping processed ones, due tu multiple render_block applications.
+			$pattern = '/(<span[^>]+class="[^"]*has-rotator[^"]*"[^>]*>)(?:(?!<template).)*?(<\/span>)/s';
 			$replace = '$1<template data-wp-each--string="context.strings"><span data-wp-text="context.string"></span></template>$2';
 			$content = preg_replace( $pattern, $replace, $content );
+
+			// Not necessary due to how WP Interactivity Works (still causes flash when JS takes over)
+			// $content = wp_interactivity_process_directives( $content );
 			
 			\wp_enqueue_script_module( '@wecodeart/rotator' );
 
@@ -214,6 +218,7 @@ final class Formatting implements Integration {
 
 		// Counter
 		if ( strpos( $content, 'has-counter' ) ) {
+			$p = wecodeart( 'dom' )::procesor( $content );
 
 			$from = [];
 

@@ -118,24 +118,24 @@ class Styles extends Base {
                 content: none;
             }
             .has-decoration.is-style-brush::after {
-                -webkit-mask: url('$SVG_Brush1') center 100% no-repeat;
-                mask: url('$SVG_Brush1') 100% center no-repeat;
+                -webkit-mask: url('$SVG_Brush1') center 100%;
+                -webkit-mask-repeat: no-repeat;
             }
             .has-decoration.is-style-brush-secondary::after {
-                -webkit-mask: url('$SVG_Brush2') center 100% no-repeat;
-                mask: url('$SVG_Brush2') 100% center no-repeat;
+                -webkit-mask: url('$SVG_Brush2') center 100%;
+                -webkit-mask-repeat: no-repeat;
             }
             .has-decoration.is-style-pencil::after {
-                -webkit-mask: url('$SVG_Pencil') center 100% no-repeat;
-                mask: url('$SVG_Pencil') 100% center no-repeat;
+                -webkit-mask: url('$SVG_Pencil') center 100%;
+                -webkit-mask-repeat: no-repeat;
             }
             .has-decoration.is-style-lines::after {
-                -webkit-mask: url('$SVG_Lines1') center 100% no-repeat;
-                mask: url('$SVG_Lines1') 100% center no-repeat;
+                -webkit-mask: url('$SVG_Lines1') center 100%;
+                -webkit-mask-repeat: no-repeat;
             }
             .has-decoration.is-style-lines-secondary::after {
-                -webkit-mask: url('$SVG_Lines2') center 100% no-repeat;
-                mask: url('$SVG_Lines2') 100% center no-repeat;
+                -webkit-mask: url('$SVG_Lines2') center 100%;
+                -webkit-mask-repeat: no-repeat;
             }
             .has-decoration[class*=is-style-oval] {
                 --wp--offset: .25em;
@@ -153,16 +153,16 @@ class Styles extends Base {
                 height: initial;
             }
             .has-decoration.is-style-oval::after {
-                -webkit-mask: url('$SVG_Oval_1') center 100% no-repeat;
-                mask: url('$SVG_Oval_1') 100% center no-repeat;
+                -webkit-mask: url('$SVG_Oval_1') center 100%;
+                -webkit-mask-repeat: no-repeat;
             }
             .has-decoration.is-style-oval-secondary::after {
-                -webkit-mask: url('$SVG_Oval_2') center 100% no-repeat;
-                mask: url('$SVG_Oval_2') 100% center no-repeat;
+                -webkit-mask: url('$SVG_Oval_2') center 100%;
+                -webkit-mask-repeat: no-repeat;
             }
             .has-decoration.is-style-oval-tertiary::after {
-                -webkit-mask: url('$SVG_Oval_3') center 100% no-repeat;
-                mask: url('$SVG_Oval_3') 100% center no-repeat;
+                -webkit-mask: url('$SVG_Oval_3') center 100%;
+                -webkit-mask-repeat: no-repeat;
             }
             .has-decoration.is-style-marker {
                 --wp--offset: .25em;
@@ -178,8 +178,8 @@ class Styles extends Base {
                 left: calc(-1 * var(--wp--offset));
                 right: calc(-1 * var(--wp--offset));
                 bottom: .025em;
-                -webkit-mask: url('$SVG_Marker') center 100% no-repeat;
-                mask: url('$SVG_Marker') 100% center no-repeat;
+                -webkit-mask: url('$SVG_Marker') center 100%;
+                -webkit-mask-repeat: no-repeat;
             }
         CSS;
 	}
