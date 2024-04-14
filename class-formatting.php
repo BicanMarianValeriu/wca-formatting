@@ -9,7 +9,7 @@
  * @subpackage 	Support\Modules\Formatting
  * @copyright   Copyright (c) 2024, WeCodeArt Framework
  * @since 		6.3.0
- * @version		6.4.3
+ * @version		6.4.4
  */
 
 namespace WeCodeArt\Support\Modules;
@@ -80,7 +80,7 @@ final class Formatting implements Integration {
 
 			\wecodeart( 'styles' )->Components->load( [ 'formatting', 'floating/tooltip', 'floating/popover' ] );
 
-			while( $p->next_tag( [ 'tag_name' => 'span', 'class_name' => 'has-floating' ] ) ) {
+			while( $p->next_tag( [ 'class_name' => 'has-floating' ] ) ) {
 				$json 	= json_decode( urldecode( $p->get_attribute( 'data-wp-context' ) ), true );
 
 				if ( json_last_error() === JSON_ERROR_NONE ) {
@@ -161,7 +161,7 @@ final class Formatting implements Integration {
 		if ( strpos( $content, 'has-rotator' ) ) {
 			$p = wecodeart( 'dom' )::procesor( $content );
 
-			while( $p->next_tag( [ 'tag_name' => 'span', 'class_name' => 'has-rotator' ] ) ) {
+			while( $p->next_tag( [ 'class_name' => 'has-rotator' ] ) ) {
 				$json 	= json_decode( urldecode( $p->get_attribute( 'data-wp-context' ) ), true );
 
 				if ( json_last_error() === JSON_ERROR_NONE ) {
@@ -228,7 +228,7 @@ final class Formatting implements Integration {
 
 			$from = [];
 
-			while( $p->next_tag( [ 'tag_name' => 'span', 'class_name' => 'has-counter' ] ) ) {
+			while( $p->next_tag( [ 'class_name' => 'has-counter' ] ) ) {
 				$json 	= json_decode( urldecode( $p->get_attribute( 'data-wp-context' ) ), true );
 
 				if ( json_last_error() === JSON_ERROR_NONE ) {
