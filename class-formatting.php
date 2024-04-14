@@ -9,7 +9,7 @@
  * @subpackage 	Support\Modules\Formatting
  * @copyright   Copyright (c) 2024, WeCodeArt Framework
  * @since 		6.3.0
- * @version		6.4.2
+ * @version		6.4.3
  */
 
 namespace WeCodeArt\Support\Modules;
@@ -20,9 +20,7 @@ use WeCodeArt\Singleton;
 use WeCodeArt\Integration;
 use WeCodeArt\Config\Traits\Asset;
 use WeCodeArt\Conditional\Traits\No_Conditionals;
-use WP_HTML_Tag_Processor;
-use function WeCodeArt\Functions\get_prop;
-use function WeCodeArt\Functions\toJSON;
+use function WeCodeArt\Functions\{ get_prop, toJSON };
 
 /**
  * The Formatting object.
@@ -49,20 +47,28 @@ final class Formatting implements Integration {
 		wecodeart( 'styles' )->Components->register( 'floating/popover', 	Formatting\Styles\Floating\Popover::class );
 
 		// Enqueue assets hooks.
-		\add_action( 'wp_enqueue_scripts', 					[ $this, 'frontend_assets'		], 20, 1 );
-		\add_action( 'enqueue_block_editor_assets',			[ $this, 'editor_assets' 		], 20, 1 );
+		\add_action( 'wp_enqueue_scripts', 					[ $this, 'frontend_assets'	], 20, 1 );
+		\add_action( 'enqueue_block_editor_assets',			[ $this, 'editor_assets'	], 20, 1 );
 		// Extend Gutenberg settings.
-		\add_filter( 'wecodeart/filter/gutenberg/settings',	[ $this, 'editor_settings'		], 20, 2 ); 
+		\add_filter( 'wecodeart/filter/gutenberg/settings',	[ $this, 'editor_settings'	], 20, 2 ); 
 		// Decode url encoded options.
-		\add_filter( 'render_block', 						[ $this, 'render_block' 		], 20, 1 );
+		\add_filter( 'render_block', 						[ $this, 'render_block'		], PHP_INT_MAX, 2 );
 	}
 
 	/**
 	 * Filter render.
 	 *
+	 * @param	string	$content
+	 * @param	array	$block
+	 *
 	 * @return  string
 	 */
-	public function render_block( string $content = '' ): string {
+	public function render_block( string $content = '', array $block ): string {
+		// Only allowed blocks to avoid unnecessary passes.
+		if( ! in_array( get_prop( $block, [ 'blockName' ] ), self::get_blocks(), true ) ) {
+			return $content;
+		}
+
 		// Decoration
 		if( strpos( $content, 'has-decoration' ) ) {
 			\wecodeart( 'styles' )->Components->load( [ 'formatting' ] );
@@ -405,6 +411,21 @@ final class Formatting implements Integration {
 		}
 
 		return $settings;
+	}
+
+	/**
+	 * Allowed blocks.
+	 *
+	 * @return 	array
+	 */
+	public static function get_blocks(): array {
+		return apply_filters( 'wecodeart/filter/formatting/blocks', [
+			'core/heading',
+			'core/paragraph',
+			'core/table',
+			'core/code',
+			'core/list-item'
+		] );
 	}
 
 	/**
