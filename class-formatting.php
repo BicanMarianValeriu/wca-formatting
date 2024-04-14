@@ -63,7 +63,7 @@ final class Formatting implements Integration {
 	 *
 	 * @return  string
 	 */
-	public function render_block( string $content = '', array $block ): string {
+	public function render_block( string $content, array $block ): string {
 		// Only allowed blocks to avoid unnecessary passes.
 		if( ! in_array( get_prop( $block, [ 'blockName' ] ), self::get_blocks(), true ) ) {
 			return $content;
