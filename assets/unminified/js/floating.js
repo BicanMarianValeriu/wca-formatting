@@ -336,21 +336,10 @@ const { state, actions, callbacks } = store(NAMESPACE, {
             const { ref } = getElement();
             const tip = callbacks.getTipElement();
 
-            const { placement, fallbackPlacements, boundary, offset: getOffset } = callbacks.getConfig();
+            const { placement, fallbackPlacements, shift: shiftOpts, offset: getOffset } = callbacks.getConfig();
             const attachment = AttachmentMap[callbacks.resolvePossibleFunction(placement).toUpperCase()];
 
             const arrowEl = tip.querySelector(SELECTOR_TOOLTIP_ARROW);
-
-            const preventOverflow = {
-                name: 'preventOverflow',
-                async fn(state) {
-                    const overflow = await detectOverflow(state, {
-                        boundary: boundary
-                    });
-
-                    return {};
-                },
-            };
 
             const setPlacement = {
                 name: 'setPlacement',
@@ -366,10 +355,9 @@ const { state, actions, callbacks } = store(NAMESPACE, {
                 middleware: [
                     offset({ ...getOffset }),
                     flip({ fallbackPlacements }),
-                    shift({ crossAxis: true }),
+                    shiftOpts ? shift({ ...shiftOpts }) : false,
                     arrowEl ? arrow({ element: arrowEl }) : false,
                     inline(),
-                    preventOverflow,
                     setPlacement,
                 ].filter(Boolean),
             }).then(({ x, y, middlewareData: { arrow } = {} }) => {
