@@ -144,7 +144,7 @@ final class Formatting implements Integration {
 				'placement' => '(string|function)',
 				'fallbackPlacements' => 'array',
 				'offset' 	=> '(array|object|string|function)',
-				'shift' 	=> '(null|object|function)',
+				'shift' 	=> '(null|boolean|object|function)',
 				'delay' 	=> '(number|object)',
 				'className' => '(string|function)',
 				'title'  	=> '(string|element|function)',
