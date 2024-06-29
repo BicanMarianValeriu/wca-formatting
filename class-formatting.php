@@ -111,6 +111,7 @@ final class Formatting implements Integration {
 			$content = $p->get_updated_html();
 
 			\wp_enqueue_script_module( '@wecodeart/floating' );
+			\wp_enqueue_script( 'wecodeart-support-modules-assets-template' );
 
 			\wp_interactivity_state( 'wecodeart/floating', apply_filters( 'wecodeart/filter/interactive/state/floating', [
 				'isEnabled'	=> true,
