@@ -18,8 +18,7 @@ defined( 'ABSPATH' ) || exit;
 
 use WeCodeArt\Singleton;
 use WeCodeArt\Integration;
-use WeCodeArt\Config\Traits\Asset;
-use WeCodeArt\Conditional\Traits\No_Conditionals;
+use WeCodeArt\Config\Traits\{Asset, No_Conditionals };
 use function WeCodeArt\Functions\{ get_prop, toJSON };
 
 /**

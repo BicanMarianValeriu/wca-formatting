@@ -1,12 +1,6 @@
 import { store, getContext, getElement, getConfig, withScope } from '@wordpress/interactivity';
 
 const {
-    hooks: {
-        applyFilters
-    }
-} = wp;
-
-const {
     fn: {
         validateConfig,
         executeAfterTransition,
@@ -21,7 +15,7 @@ const EVENT_KEY = `.${DATA_KEY}`;
 const EVENT_CHANGE = `beforeChange${EVENT_KEY}`;
 const EVENT_CHANGED = `afterChange${EVENT_KEY}`;
 
-const { state, actions, callbacks } = store(NAMESPACE, {
+const { state, actions } = store(NAMESPACE, {
     state: {
         get initialString() {
             const { ref } = getElement();
@@ -30,15 +24,15 @@ const { state, actions, callbacks } = store(NAMESPACE, {
         },
         get nextString() {
             const { ref } = getElement();
-            const context = getContext();
-            const word = context.activeString || state.initialString;
+            const { activeString } = getContext();
+            const word = activeString || state.initialString;
 
             return word !== ref.lastElementChild ? word.nextElementSibling : ref.firstElementChild;
         },
         get prevString() {
             const { ref } = getElement();
-            const context = getContext();
-            const word = context.activeString || state.initialString;
+            const { activeString } = getContext();
+            const word = activeString || state.initialString;
 
             return word !== ref.firstElementChild ? word.previousElementSibling : ref.lastElementChild;
         }
@@ -47,7 +41,7 @@ const { state, actions, callbacks } = store(NAMESPACE, {
     actions: {
         init() {
             const context = getContext();
-            const { changeDelay, letterDelay } = callbacks.getConfig();
+            const { changeDelay, letterDelay } = { ...state, ...context };
 
             clearTimeout(context.timeout);
             context.timeout = setTimeout(withScope(() => context.activeString = state.nextString), changeDelay);
@@ -116,12 +110,6 @@ const { state, actions, callbacks } = store(NAMESPACE, {
                 word.style.setProperty('--wp--letters', letters.length);
             });
         },
-        getConfig: () => {
-            const context = getContext();
-            const config = { ...state, ...context };
-
-            return applyFilters('wecodeart.interactive.config', config, NAME);
-        },
-        validateConfig: () => validateConfig(NAME, callbacks.getConfig(), getConfig(NAMESPACE)),
+        validateConfig: () => validateConfig(NAME, { ...state, ...getContext() }, getConfig(NAMESPACE)),
     }
 });

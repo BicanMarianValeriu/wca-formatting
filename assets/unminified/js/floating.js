@@ -5,11 +5,11 @@ if (typeof computePosition === 'undefined') {
     throw new TypeError('WeCodeArt\'s tooltips require Floating UI (https://floating-ui.com/)');
 }
 
-const {
-    hooks: {
-        applyFilters
-    }
-} = wp;
+// const {
+//     hooks: {
+//         applyFilters
+//     }
+// } = wp;
 
 const {
     fn: {
@@ -55,30 +55,72 @@ const AttachmentMap = {
 const { state, actions, callbacks } = store(NAMESPACE, {
     state: {
         get getContent() {
-            const { content } = callbacks.getConfig();
+            const { content = state.content } = getContext();
 
             return callbacks.resolvePossibleFunction(content);
         },
         get getTitle() {
-            const { title } = callbacks.getConfig();
+            const { title = state.title } = getContext();
 
             return callbacks.resolvePossibleFunction(title);
+        },
+        get getDelay() {
+            let { delay = state.delay } = getContext();
+
+            if (typeof delay === 'string') {
+                delay = delay.split(',').map(no => Number.parseInt(no, 10));
+            } else {
+                delay = [delay];
+            }
+
+            switch (delay.length) {
+                case 1:
+                    delay = { show: delay[0], hide: delay[0] };
+                    break;
+                case 2:
+                    delay = { show: delay[0], hide: delay[1] };
+                    break;
+            }
+
+            return delay;
+        },
+        get getOffset() {
+            let { offset = state.offset } = getContext();
+
+            if (typeof offset === 'string') {
+                offset = offset.split(',').map(no => Number.parseInt(no, 10));
+            }
+
+            switch (offset.length) {
+                case 1:
+                    offset = { mainAxis: offset[0] };
+                    break;
+                case 2:
+                    offset = { mainAxis: offset[0], crossAxis: offset[1] };
+                    break;
+                case 3:
+                    offset = { mainAxis: offset[0], crossAxis: offset[1], alignmentAxis: offset[2] };
+                    break;
+            }
+
+            return offset;
         },
         get isWithContent() {
             return Boolean(state.getTitle || state.getContent);
         },
         get isWithActiveTrigger() {
-            const { activeTrigger = {} } = callbacks.getConfig();
+            const { activeTrigger = {} } = getContext();
 
             return Object.values(activeTrigger).includes(true);
         },
         get isAnimated() {
-            const { animation, tip } = callbacks.getConfig();
+            const { animation } = state;
+            const { tip } = getContext();
 
             return animation || (tip && tip.classList.contains('fade'));
         },
         get isShown() {
-            const { tip } = callbacks.getConfig();
+            const { tip } = getContext();
 
             return tip && tip.classList.contains('show');
         }
@@ -98,8 +140,8 @@ const { state, actions, callbacks } = store(NAMESPACE, {
             context.isEnabled = !context.isEnabled;
         },
         toggle: (e) => {
-            const context = callbacks.getConfig();
-            const { isEnabled } = context;
+            const context = getContext();
+            const { isEnabled } = state;
 
             if (!isEnabled) {
                 return;
@@ -116,14 +158,17 @@ const { state, actions, callbacks } = store(NAMESPACE, {
             actions.enter(e);
         },
         show: (e) => {
+            if (state.isShown) {
+                return;
+            }
+
             const { ref } = getElement();
 
             if (ref.style.display === 'none') {
                 throw new Error('Please use show on visible elements');
             }
 
-            const config = callbacks.getConfig();
-            const { isEnabled } = config;
+            const { isEnabled } = state;
 
             if (!(state.isWithContent && isEnabled)) {
                 return;
@@ -146,7 +191,7 @@ const { state, actions, callbacks } = store(NAMESPACE, {
             ref.setAttribute('aria-describedby', tip.getAttribute('id'));
 
             if (!ref.ownerDocument.documentElement.contains(tip)) {
-                const { container } = config;
+                const container = !context.container ? document.body : getDOMElement(context.container);
                 container.append(tip);
                 context.cleanup = autoUpdate(ref, tip, withScope(callbacks.createPopper));
                 Events.trigger(ref, EVENT_INSERTED);
@@ -177,10 +222,6 @@ const { state, actions, callbacks } = store(NAMESPACE, {
             executeAfterTransition(complete, tip, state.isAnimated);
         },
         hide: () => {
-            if (!state.isShown) {
-                return;
-            }
-
             const { ref } = getElement();
 
             const hideEvent = Events.trigger(ref, EVENT_HIDE);
@@ -235,9 +276,10 @@ const { state, actions, callbacks } = store(NAMESPACE, {
 
             context.isHovered = true;
 
-            const { delay: { show } } = callbacks.getConfig();
+            const { show } = state.getDelay;
 
-            callbacks.withTimeout(() => context.isHovered && actions.show(e), show);
+            // callbacks.withTimeout(() => context.isHovered && actions.show(e), show);
+            callbacks.withTimeout(() => actions.show(e), show);
         },
         leave: (e) => {
             const { type, target, relatedTarget } = e;
@@ -251,9 +293,9 @@ const { state, actions, callbacks } = store(NAMESPACE, {
 
             context.isHovered = false;
 
-            const { delay: { hide } } = callbacks.getConfig();
+            const { hide } = state.getDelay;
 
-            callbacks.withTimeout(() => !context.isHovered && actions.hide(e), hide);
+            callbacks.withTimeout(() => actions.hide(e), hide);
         },
         setContent(content) {
             const context = getContext();
@@ -273,7 +315,8 @@ const { state, actions, callbacks } = store(NAMESPACE, {
             if (context.templateFactory) {
                 context.templateFactory.changeContent(content);
             } else {
-                const config = callbacks.getConfig();
+                const config = { ...state, ...context };
+
                 context.templateFactory = new Template({
                     ...config,
                     content, // Overwrite content with object
@@ -293,7 +336,7 @@ const { state, actions, callbacks } = store(NAMESPACE, {
             return context.tip;
         },
         getContentForTemplate: () => {
-            const { plugin } = callbacks.getConfig();
+            const { plugin } = getContext();
 
             let object = {};
 
@@ -319,7 +362,7 @@ const { state, actions, callbacks } = store(NAMESPACE, {
 
             tip.classList.remove('fade', 'show');
             tip.classList.add(`wp-${NAME}--auto`);
-            const { plugin = 'tooltip' } = callbacks.getConfig();
+            const { plugin = 'tooltip' } = getContext();
             tip.classList.add(`wp-${NAME}--${plugin}`);
 
             const tipId = callbacks.getUID().toString();
@@ -336,7 +379,7 @@ const { state, actions, callbacks } = store(NAMESPACE, {
             const { ref } = getElement();
             const tip = callbacks.getTipElement();
 
-            const { placement, fallbackPlacements, shift: shiftOpts, offset: getOffset } = callbacks.getConfig();
+            const { placement, fallbackPlacements, shift: shiftOpts, offset: getOffset } = { ...state, ...getContext() };
             const attachment = AttachmentMap[callbacks.resolvePossibleFunction(placement).toUpperCase()];
 
             const arrowEl = tip.querySelector(SELECTOR_TOOLTIP_ARROW);
@@ -393,50 +436,8 @@ const { state, actions, callbacks } = store(NAMESPACE, {
                 context.cleanup = null;
             }
         },
-        getConfig: () => {
-            const context = getContext();
-
-            let config = { ...state, ...context };
-
-            // Get container.
-            config.container = !context.container ? document.body : getDOMElement(context.container);
-
-            // Format offset/delay.
-            let { offset, delay } = config;
-
-            if (typeof offset === 'string') {
-                offset = offset.split(',').map(no => Number.parseInt(no, 10));
-            }
-
-            switch (offset.length) {
-                case 1:
-                    config.offset = { mainAxis: offset[0] };
-                    break;
-                case 2:
-                    config.offset = { mainAxis: offset[0], crossAxis: offset[1] };
-                    break;
-                case 3:
-                    config.offset = { mainAxis: offset[0], crossAxis: offset[1], alignmentAxis: offset[2] };
-                    break;
-            }
-
-            if (typeof delay === 'string') {
-                delay = delay.split(',').map(no => Number.parseInt(no, 10));
-            }
-
-            switch (delay.length) {
-                case 1:
-                    config.delay = { show: delay[0], hide: delay[0] };
-                    break;
-                case 2:
-                    config.delay = { show: delay[0], hide: delay[1] };
-                    break;
-            }
-
-            return applyFilters('wecodeart.interactive.config', config, NAME);
-        },
         validateConfig: () => {
-            return validateConfig(NAME, callbacks.getConfig(), getConfig(NAMESPACE));
+            return validateConfig(NAME, { ...state, ...getContext() }, getConfig(NAMESPACE));
         },
         getUID: () => {
             let prefix = `wp-${NAME}-`;
@@ -460,6 +461,7 @@ const { state, actions, callbacks } = store(NAMESPACE, {
         withTimeout: (callback, delay) => {
             const context = getContext();
             clearTimeout(context.timeout);
+
             context.timeout = setTimeout(withScope(callback), delay);
         }
     }
