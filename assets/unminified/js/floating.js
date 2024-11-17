@@ -379,7 +379,7 @@ const { state, actions, callbacks } = store(NAMESPACE, {
             const { ref } = getElement();
             const tip = callbacks.getTipElement();
 
-            const { placement, fallbackPlacements, shift: shiftOpts, offset: getOffset } = { ...state, ...getContext() };
+            const { placement, fallbackPlacements, shift: shiftOpts } = { ...state, ...getContext() };
             const attachment = AttachmentMap[callbacks.resolvePossibleFunction(placement).toUpperCase()];
 
             const arrowEl = tip.querySelector(SELECTOR_TOOLTIP_ARROW);
@@ -396,7 +396,7 @@ const { state, actions, callbacks } = store(NAMESPACE, {
             return computePosition(ref, tip, {
                 placement: attachment,
                 middleware: [
-                    offset({ ...getOffset }),
+                    offset({ ...state.getOffset }),
                     flip({ fallbackPlacements }),
                     shiftOpts ? shift({ ...shiftOpts }) : false,
                     arrowEl ? arrow({ element: arrowEl }) : false,
@@ -436,9 +436,6 @@ const { state, actions, callbacks } = store(NAMESPACE, {
                 context.cleanup = null;
             }
         },
-        validateConfig: () => {
-            return validateConfig(NAME, { ...state, ...getContext() }, getConfig(NAMESPACE));
-        },
         getUID: () => {
             let prefix = `wp-${NAME}-`;
 
@@ -463,6 +460,9 @@ const { state, actions, callbacks } = store(NAMESPACE, {
             clearTimeout(context.timeout);
 
             context.timeout = setTimeout(withScope(callback), delay);
+        },
+        validateConfig: () => {
+            return validateConfig(NAME, { ...state, ...getContext() }, getConfig(NAMESPACE));
         }
     }
 });
