@@ -19,9 +19,12 @@ const EVENT_COMPLETE = `complete${EVENT_KEY}`;
 const { state, actions } = store(NAMESPACE, {
     state: {
         get countTo() {
-            const { from = state.from, value = from, comma = state.comma, decimals = state.decimals } = getContext();
+            const { from: _from, comma: _comma, decimals: _decimals } = state;
+            const { value, from = _from, comma = _comma, decimals = _decimals } = getContext();
 
-            let text = value.toFixed(decimals);
+            let text = value || from;
+            
+            text = text.toFixed(decimals);
 
             if (comma) {
                 text = parseFloat(text).toLocaleString();
@@ -35,7 +38,7 @@ const { state, actions } = store(NAMESPACE, {
             return Math.ceil(speed / refresh);
         },
         get increment() {
-            const { from, to } = getContext();
+            const { from = state.from, to = state.to } = getContext();
 
             return parseFloat((parseFloat(to) - parseFloat(from)) / state.loops);
         },
@@ -45,7 +48,7 @@ const { state, actions } = store(NAMESPACE, {
         start() {
             const context = getContext();
             const { ref } = getElement();
-            const { refresh = state.refresh, from, to } = context;
+            const { refresh = state.refresh, from = state.from, to = state.to } = context;
 
             const startEvent = Events.trigger(ref, EVENT_START, { from, to });
 
@@ -67,7 +70,7 @@ const { state, actions } = store(NAMESPACE, {
         },
         update() {
             const context = getContext();
-            const { from } = context;
+            const { from = state.from } = context;
 
             context.value = (context.value || parseFloat(from)) + state.increment;
             context.loopCount = (context.loopCount || 0) + 1;
