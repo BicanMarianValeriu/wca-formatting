@@ -19,7 +19,7 @@ const EVENT_COMPLETE = `complete${EVENT_KEY}`;
 const { state, actions } = store(NAMESPACE, {
     state: {
         get countTo() {
-            const { from, value = from, comma = state.comma, decimals = state.decimals } = getContext();
+            const { from = state.from, value = from, comma = state.comma, decimals = state.decimals } = getContext();
 
             let text = value.toFixed(decimals);
 
