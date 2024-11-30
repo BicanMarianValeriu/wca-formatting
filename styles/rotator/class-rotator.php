@@ -67,8 +67,9 @@ class Rotator extends Base {
                 top: 0;
                 transition-duration: var(--wp--duration);
             }
-            .has-rotator span:first-child {
+            .has-rotator span:first-of-type {
                 position: relative;
+                opacity: 1;
             }
             .has-rotator i {
                 display: inline-block;
