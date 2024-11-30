@@ -9,7 +9,7 @@
  * @subpackage 	Support\Modules\Formatting
  * @copyright   Copyright (c) 2024, WeCodeArt Framework
  * @since 		6.3.0
- * @version		6.4.4
+ * @version		6.5.8
  */
 
 namespace WeCodeArt\Support\Modules;
@@ -157,6 +157,8 @@ final class Formatting implements Integration {
 				'sanitizeFn' => '(null|function)',
 				'template' 	=> 'string',
 			] );
+
+			$content = wp_interactivity_process_directives( $content );
 		}
 
 		// Rotator
@@ -222,6 +224,8 @@ final class Formatting implements Integration {
 				'letterDelay' 	=> '(null|number|string)',
 				'className'		=> '(null|string)'
 			] );
+
+			$content = wp_interactivity_process_directives( $content );
 		}
 
 		// Counter
