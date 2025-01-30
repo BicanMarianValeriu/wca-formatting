@@ -158,10 +158,6 @@ const { state, actions, callbacks } = store(NAMESPACE, {
             actions.enter(e);
         },
         show: (e) => {
-            if (state.isShown) {
-                return;
-            }
-
             const { ref } = getElement();
 
             if (ref.style.display === 'none') {
@@ -278,8 +274,7 @@ const { state, actions, callbacks } = store(NAMESPACE, {
 
             const { show } = state.getDelay;
 
-            // callbacks.withTimeout(() => context.isHovered && actions.show(e), show);
-            callbacks.withTimeout(() => actions.show(e), show);
+            callbacks.withTimeout(() => context.isHovered && actions.show(e), show);
         },
         leave: (e) => {
             const { type, target, relatedTarget } = e;
@@ -295,7 +290,7 @@ const { state, actions, callbacks } = store(NAMESPACE, {
 
             const { hide } = state.getDelay;
 
-            callbacks.withTimeout(() => actions.hide(e), hide);
+            callbacks.withTimeout(() => !context.isHovered && actions.hide(e), hide);
         },
         setContent(content) {
             const context = getContext();
@@ -365,7 +360,7 @@ const { state, actions, callbacks } = store(NAMESPACE, {
             const { plugin = 'tooltip' } = getContext();
             tip.classList.add(`wp-${NAME}--${plugin}`);
 
-            const tipId = callbacks.getUID().toString();
+            const tipId = callbacks.generateId();
 
             tip.setAttribute('id', tipId);
 
@@ -436,14 +431,14 @@ const { state, actions, callbacks } = store(NAMESPACE, {
                 context.cleanup = null;
             }
         },
-        getUID: () => {
+        generateId: () => {
             let prefix = `wp-${NAME}-`;
 
             do {
                 prefix += Math.floor(Math.random() * 1000000);
             } while (document.getElementById(prefix));
 
-            return prefix;
+            return prefix.toString();
         },
         resolvePossibleFunction: (arg) => {
             const { ref } = getElement();
