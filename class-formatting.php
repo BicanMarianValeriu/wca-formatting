@@ -9,7 +9,7 @@
  * @subpackage 	Support\Modules\Formatting
  * @copyright   Copyright (c) 2024, WeCodeArt Framework
  * @since 		6.3.0
- * @version		6.5.8
+ * @version		6.6.7
  */
 
 namespace WeCodeArt\Support\Modules;
@@ -29,6 +29,8 @@ final class Formatting implements Integration {
     use Asset;
     use Singleton;
 	use No_Conditionals;
+
+	const VERSION = '1.0.9';
 
 	/**
 	 * Send to Constructor

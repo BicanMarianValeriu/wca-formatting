@@ -12,6 +12,7 @@ import { floating } from './floating';
 import { justify } from './justify';
 import { underline } from './underline';
 import { decoration } from './decoration';
+import { typography } from './typography';
 import { abbreviation } from './abbreviation';
 import { rotator } from './rotator';
 import plugin from './plugin';
@@ -26,6 +27,7 @@ function registerWeCodeArtFormats() {
 		rotator,
 		underline,
 		decoration,
+		typography,
 		abbreviation,
 	].forEach(({ name, ...settings }) => {
 		if (name) {

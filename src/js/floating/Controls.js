@@ -38,7 +38,7 @@ const Controls = ({ state, setState }) => {
     return (
         <TabPanel
             activeClass="active-tab"
-            className="wecodeart-tabs wecodeart-tabs--modal"
+            className="wecodeart-tabs wecodeart-tabs--popover"
             tabs={[
                 {
                     name: 'content',

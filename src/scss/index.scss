@@ -26,6 +26,37 @@
     }
 }
 
+.wecodeart-popover {
+    .components-popover {
+        &__content {
+            border: 1px solid lightgray;
+            box-shadow: 0 0 10px #00000020;
+            min-width: 300px;
+        }
+    }
+
+    .components-input-control {
+        &__container {
+            min-width: 150px;
+        }
+    }
+
+    .components-button-group {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        display: flex;
+        background-color: white;
+
+        .components-button {
+            flex: 0 0 50%;
+            justify-content: center;
+            box-shadow: 0 0 1px 1px #00000020;
+        }
+    }
+}
+
 .wecodeart-tabs {
     &--modal {
         --wp--spacing: 2rem;
@@ -79,6 +110,51 @@
             }
         }
     }
+
+    &--popover {
+        --wp--spacing: 1.25rem;
+        padding-bottom: 36px;
+
+        .components-tab-panel {
+            &__tabs {
+                border-bottom: 1px solid lightgray;
+                padding-left: var(--wp--spacing);
+                padding-right: var(--wp--spacing);
+
+                &-item {
+                    border: 1px solid lightgray;
+                    border-bottom: 0;
+                    height: auto;
+                    padding: 8px 20px;
+
+                    &.active-tab {
+                        border-color: var(--wp-admin-theme-color);
+                        background-color: var(--wp-admin-theme-color);
+                        color: white;
+                    }
+
+                    &+button {
+                        border-left: 0;
+                    }
+                }
+            }
+
+            &__tab {
+                &-content {
+                    padding: var(--wp--spacing);
+                    max-height: 450px;
+                    max-width: 350px;
+                    overflow-y: auto;
+                }
+            }
+        }
+
+        .components-base-control {
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
 }
 
 .wecodeart-panel {
@@ -96,7 +172,7 @@
                     .components-panel {
                         &__body-title {
                             margin: calc(-1 * var(--wp--spacing)) calc(-1 * var(--wp--spacing)) 1.5rem;
-                            border-bottom: 1px solid #e0e0e0;
+                            border-bottom: 1px solid lightgray;
                         }
                     }
                 }

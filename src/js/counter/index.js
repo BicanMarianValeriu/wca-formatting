@@ -7,13 +7,16 @@ const {
     },
     element: {
         useState,
-        useEffect
+        useEffect,
+        useRef
     },
     components: {
+        ToolbarGroup,
+        ToolbarButton,
         Dashicon,
-        Modal,
         Button,
         ButtonGroup,
+        Popover,
         TabPanel,
         ToggleControl,
         __experimentalNumberControl: NumberControl,
@@ -24,7 +27,7 @@ const {
         getActiveFormat
     },
     blockEditor: {
-        RichTextToolbarButton,
+        BlockControls,
     }
 } = wp;
 
@@ -46,6 +49,7 @@ export const counter = {
         const selection = text.substring(start, end);
         const activeFormat = getActiveFormat(value, name);
         const { attributes = { 'data-wp-context': JSON.stringify({ to: '' }) } } = activeFormat || {};
+        const buttonRef = useRef(null);
 
         // Modal state
         const [isOpen, setIsOpen] = useState(false);
@@ -57,7 +61,7 @@ export const counter = {
                 return;
             }
 
-            const formatted = parseFloat(selection.replace(',',''));
+            const formatted = parseFloat(selection.replace(',', ''));
 
             setOptions({ to: isNaN(formatted) ? 0 : formatted });
         };
@@ -78,17 +82,29 @@ export const counter = {
 
         return (
             <>
-                <RichTextToolbarButton
-                    icon={<Dashicon icon="upload" />}
-                    title={__('Counter', 'wecodeart')}
-                    onClick={toggle}
-                    isActive={isActive}
-                />
+                <BlockControls>
+                    <ToolbarGroup>
+                        <ToolbarButton
+                            icon={<Dashicon icon="upload" />}
+                            title={__('Counter', 'wecodeart')}
+                            onClick={toggle}
+                            isActive={isActive}
+                            ref={buttonRef}
+                        />
+                    </ToolbarGroup>
+                </BlockControls>
                 {isOpen && (
-                    <Modal className="wecodeart-modal wecodeart-modal--floating" title={__('Settings')} onRequestClose={toggle}>
+                    <Popover
+                        animate={false}
+                        className="wecodeart-popover"
+                        anchorRef={buttonRef}
+                        offset={10}
+                        onClose={toggle}
+                        onFocusOutsided={toggle}
+                    >
                         <TabPanel
                             activeClass="active-tab"
-                            className="wecodeart-tabs wecodeart-tabs--modal"
+                            className="wecodeart-tabs wecodeart-tabs--popover"
                             tabs={[
                                 {
                                     name: 'content',
@@ -175,23 +191,21 @@ export const counter = {
                                 return render;
                             }}
                         </TabPanel>
-                        <p>
-                            <ButtonGroup>
-                                <Button isPrimary isLarge onClick={() => {
-                                    onChange(applyFormat(value, { type: name, attributes: state }));
-                                    toggle();
-                                }}>
-                                    {__('Apply')}
-                                </Button>
-                                <Button isDestructive isLarge onClick={() => {
-                                    onChange(removeFormat(value, name));
-                                    toggle();
-                                }}>
-                                    {__('Remove')}
-                                </Button>
-                            </ButtonGroup>
-                        </p>
-                    </Modal>
+                        <ButtonGroup>
+                            <Button isPrimary isLarge onClick={() => {
+                                onChange(applyFormat(value, { type: name, attributes: state }));
+                                toggle();
+                            }}>
+                                {__('Apply')}
+                            </Button>
+                            <Button isDestructive isLarge onClick={() => {
+                                onChange(removeFormat(value, name));
+                                toggle();
+                            }}>
+                                {__('Remove')}
+                            </Button>
+                        </ButtonGroup>
+                    </Popover>
                 )}
             </>
         );

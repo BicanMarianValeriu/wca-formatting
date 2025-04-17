@@ -9,7 +9,7 @@
  * @subpackage  Support\Modules\Formatting\Styles
  * @copyright   Copyright (c) 2024, WeCodeArt Framework
  * @since		6.3.0
- * @version		6.3.7
+ * @version		6.6.7
  */
 
 namespace WeCodeArt\Support\Modules\Formatting;
@@ -107,7 +107,7 @@ class Styles extends Base {
                 margin: 0;
                 left: 0;
                 right: 0;
-                bottom: -.5em;
+                bottom: -.15em;
                 height: 1em;
                 width: 100%;
                 background: var(--wp--preset--color--primary, currentColor);

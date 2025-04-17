@@ -10,11 +10,12 @@ const {
     },
     element: {
         useState,
-        useEffect
+        useEffect,
+        useRef
     },
     components: {
         Dashicon,
-        Modal,
+        Popover,
         TabPanel,
         Button,
         ButtonGroup,
@@ -22,6 +23,8 @@ const {
         BaseControl,
         SelectControl,
         ToggleControl,
+        ToolbarGroup,
+        ToolbarButton,
         __experimentalHStack: HStack,
         __experimentalNumberControl: NumberControl,
     },
@@ -31,7 +34,7 @@ const {
         getActiveFormat
     },
     blockEditor: {
-        RichTextToolbarButton,
+        BlockControls,
     }
 } = wp;
 
@@ -48,12 +51,13 @@ export const rotator = {
     attributes: {
         'data-wp-context': 'data-wp-context',
     },
-    edit({ isActive, value, onChange }) {
+    edit({ isActive, value, onChange, contentRef }) {
         const { text, start, end } = value;
         const selection = text.substring(start, end);
         const activeFormat = getActiveFormat(value, name);
         const { wecodeart: { rotatorStyles = [] } = {} } = select('core/editor').getEditorSettings();
         const { attributes = { 'data-wp-context': JSON.stringify({ strings: [], effect: 'slide' }) } } = activeFormat || {};
+        const buttonRef = useRef(null);
 
         // Modal state
         const [isOpen, setIsOpen] = useState(false);
@@ -65,7 +69,7 @@ export const rotator = {
                 return;
             }
 
-            setOptions({ strings: [selection] });    
+            setOptions({ strings: [selection] });
         };
 
         // Options state
@@ -101,22 +105,34 @@ export const rotator = {
         };
 
         const hasLetterSupport = rotatorStyles.filter(({ letters, value }) => letters && value === options.effect).length;
-        
+
         useEffect(() => setState({ ...attributes }), [activeFormat]);
-        
+
         return (
             <>
-                <RichTextToolbarButton
-                    icon={<Dashicon icon="editor-ol" />}
-                    title={__('String rotator', 'wecodeart')}
-                    onClick={toggle}
-                    isActive={isActive}
-                />
+                <BlockControls group="default">
+                    <ToolbarGroup>
+                        <ToolbarButton
+                            icon={<Dashicon icon="editor-ol" />}
+                            title={__('String rotator', 'wecodeart')}
+                            onClick={toggle}
+                            isActive={isActive}
+                            ref={buttonRef}
+                        />
+                    </ToolbarGroup>
+                </BlockControls>
                 {isOpen && (
-                    <Modal className="wecodeart-modal wecodeart-modal--floating" title={__('Settings')} onRequestClose={toggle}>
+                    <Popover
+                        animate={false}
+                        className="wecodeart-popover"
+                        anchorRef={buttonRef}
+                        offset={10}
+                        onClose={toggle}
+                        onFocusOutsided={toggle}
+                    >
                         <TabPanel
                             activeClass="active-tab"
-                            className="wecodeart-tabs wecodeart-tabs--modal"
+                            className="wecodeart-tabs wecodeart-tabs--popover"
                             tabs={[
                                 {
                                     name: 'content',
@@ -203,23 +219,21 @@ export const rotator = {
                                 return render;
                             }}
                         </TabPanel>
-                        <p>
-                            <ButtonGroup>
-                                <Button isPrimary isLarge onClick={() => {
-                                    onChange(applyFormat(value, { type: name, attributes: state }));
-                                    toggle();
-                                }}>
-                                    {__('Apply')}
-                                </Button>
-                                <Button isDestructive isLarge onClick={() => {
-                                    onChange(removeFormat(value, name));
-                                    toggle();
-                                }}>
-                                    {__('Remove')}
-                                </Button>
-                            </ButtonGroup>
-                        </p>
-                    </Modal>
+                        <ButtonGroup>
+                            <Button isPrimary isLarge onClick={() => {
+                                onChange(applyFormat(value, { type: name, attributes: state }));
+                                toggle();
+                            }}>
+                                {__('Apply')}
+                            </Button>
+                            <Button isDestructive isLarge onClick={() => {
+                                onChange(removeFormat(value, name));
+                                toggle();
+                            }}>
+                                {__('Remove')}
+                            </Button>
+                        </ButtonGroup>
+                    </Popover>
                 )}
             </>
         );
