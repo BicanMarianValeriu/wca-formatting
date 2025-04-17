@@ -19,11 +19,10 @@ const EVENT_COMPLETE = `complete${EVENT_KEY}`;
 const { state, actions } = store(NAMESPACE, {
     state: {
         get countTo() {
-            const { from: _from, comma: _comma, decimals: _decimals } = state;
-            const { value, from = _from, comma = _comma, decimals = _decimals } = getContext();
+            const { value, from = 0, comma = false, decimals = 0 } = getContext();
 
             let text = value || from;
-            
+
             text = text.toFixed(decimals);
 
             if (comma) {
@@ -33,12 +32,12 @@ const { state, actions } = store(NAMESPACE, {
             return text;
         },
         get loops() {
-            const { refresh = state.refresh, speed = state.speed } = getContext();
+            const { refresh = 100, speed = 1000 } = getContext();
 
             return Math.ceil(speed / refresh);
         },
         get increment() {
-            const { from = state.from, to = state.to } = getContext();
+            const { from = 0, to = 0 } = getContext();
 
             return parseFloat((parseFloat(to) - parseFloat(from)) / state.loops);
         },
@@ -101,7 +100,7 @@ const { state, actions } = store(NAMESPACE, {
             const observer = new IntersectionObserver(withScope((els, observer) => els.forEach(({ isIntersecting }) => {
                 if (isIntersecting) {
                     actions.start();
-                    observer.disconnect();
+                    setTimeout(() => observer.unobserve(ref), 100);
                 }
             })), opts);
 
