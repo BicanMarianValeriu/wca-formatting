@@ -1,15 +1,9 @@
 import { store, getContext, getElement, getConfig, withScope } from '@wordpress/interactivity';
-import { computePosition, autoUpdate, detectOverflow, offset, flip, shift, arrow, inline } from '//cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.3/+esm';
+import { computePosition, autoUpdate, offset, flip, shift, arrow, inline } from '//cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.9/+esm';
 
 if (typeof computePosition === 'undefined') {
     throw new TypeError('WeCodeArt\'s tooltips require Floating UI (https://floating-ui.com/)');
 }
-
-// const {
-//     hooks: {
-//         applyFilters
-//     }
-// } = wp;
 
 const {
     fn: {
@@ -114,16 +108,10 @@ const { state, actions, callbacks } = store(NAMESPACE, {
             return Object.values(activeTrigger).includes(true);
         },
         get isAnimated() {
-            const { animation } = state;
-            const { tip } = getContext();
+            const { animation = state.animation } = getContext();
 
-            return animation || (tip && tip.classList.contains('fade'));
+            return animation;
         },
-        get isShown() {
-            const { tip } = getContext();
-
-            return tip && tip.classList.contains('show');
-        }
     },
     // Public methods!
     actions: {
@@ -140,17 +128,15 @@ const { state, actions, callbacks } = store(NAMESPACE, {
             context.isEnabled = !context.isEnabled;
         },
         toggle: (e) => {
-            const context = getContext();
             const { isEnabled } = state;
 
             if (!isEnabled) {
                 return;
             }
 
-            context.activeTrigger = {};
-            context.activeTrigger.click = !!context.activeTrigger.click;
-
-            if (state.isShown) {
+            const isShown = callbacks.getTipElement().classList.contains('show');
+            
+            if (isShown) {
                 actions.leave(e);
                 return;
             }
@@ -158,7 +144,9 @@ const { state, actions, callbacks } = store(NAMESPACE, {
             actions.enter(e);
         },
         show: (e) => {
-            if (state.isShown) {
+            const isShown = callbacks.getTipElement().classList.contains('show');
+            
+            if (isShown) {
                 return;
             }
 
@@ -222,6 +210,12 @@ const { state, actions, callbacks } = store(NAMESPACE, {
             executeAfterTransition(complete, tip, state.isAnimated);
         },
         hide: () => {
+            const isShown = callbacks.getTipElement().classList.contains('show');
+
+            if (!isShown) {
+                return;
+            }
+
             const { ref } = getElement();
 
             const hideEvent = Events.trigger(ref, EVENT_HIDE);
@@ -266,10 +260,12 @@ const { state, actions, callbacks } = store(NAMESPACE, {
             const { type } = e;
             const context = getContext();
 
+            const isShown = callbacks.getTipElement().classList.contains('show');
+
             context.activeTrigger = {};
             context.activeTrigger[type === 'focusin' ? TRIGGER_FOCUS : TRIGGER_HOVER] = true;
 
-            if (state.isShown || context.isHovered) {
+            if (isShown || context.isHovered) {
                 context.isHovered = true;
                 return;
             }
@@ -277,8 +273,7 @@ const { state, actions, callbacks } = store(NAMESPACE, {
             context.isHovered = true;
 
             const { show } = state.getDelay;
-
-            // callbacks.withTimeout(() => context.isHovered && actions.show(e), show);
+            
             callbacks.withTimeout(() => actions.show(e), show);
         },
         leave: (e) => {
@@ -301,7 +296,9 @@ const { state, actions, callbacks } = store(NAMESPACE, {
             const context = getContext();
             context.newContent = content;
 
-            if (state.isShown) {
+            const isShown = callbacks.getTipElement().classList.contains('show');
+
+            if (isShown) {
                 callbacks.disposePopper();
                 actions.show();
             }
@@ -379,7 +376,7 @@ const { state, actions, callbacks } = store(NAMESPACE, {
             const { ref } = getElement();
             const tip = callbacks.getTipElement();
 
-            const { placement, fallbackPlacements, shift: shiftOpts, offset: getOffset } = { ...state, ...getContext() };
+            const { placement, fallbackPlacements, shift: shiftOpts } = { ...state, ...getContext() };
             const attachment = AttachmentMap[callbacks.resolvePossibleFunction(placement).toUpperCase()];
 
             const arrowEl = tip.querySelector(SELECTOR_TOOLTIP_ARROW);
@@ -396,7 +393,7 @@ const { state, actions, callbacks } = store(NAMESPACE, {
             return computePosition(ref, tip, {
                 placement: attachment,
                 middleware: [
-                    offset({ ...getOffset }),
+                    offset({ ...state.getOffset }),
                     flip({ fallbackPlacements }),
                     shiftOpts ? shift({ ...shiftOpts }) : false,
                     arrowEl ? arrow({ element: arrowEl }) : false,
